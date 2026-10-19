@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Road Accident Analysis</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6fa;
+            color: #202b3c;
+        }
+
+        header {
+            background: #172554;
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .container {
+            padding: 24px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #00000012;
+        }
+
+        .card h3 {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .number {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .note {
+            margin-top: 24px;
+            color: #64748b;
+        }
+        .filters {
+    background: white;
+    padding: 20px;
+    margin: 24px 0;
+    border-radius: 12px;
+}
+
+.filters label {
+    display: block;
+    margin-top: 14px;
+    font-weight: bold;
+}
+
+.filters select,
+.filters button {
+    padding: 10px;
+    margin-top: 6px;
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+}
+
+.filters button {
+    background: #172554;
+    color: white;
+    cursor: pointer;
+    margin-top: 18px;
+}
+
+.filters button:hover {
+    background: #263b75;
+}
+.charts {
+    margin-top: 24px;
+}
+
+.chart-box {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+}
+
+.chart-box canvas {
+    max-height: 300px;
+}
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Road Accident Data Analysis System</h1>
+        <p>Explore road accident patterns and statistics</p>
+    </header>
+
+    <main class="container">
+
+        <h2>Dashboard Overview</h2>
+        <section class="filters">
+    <h2>Filter Accident Data</h2>
+
+    <label for="year">Year:</label>
+    <select id="year">
+        <option value="">All Years</option>
+    </select>
+
+    <label for="state">State:</label>
+    <select id="state">
+        <option value="">All States</option>
+    </select>
+
+    <label for="vehicle">Vehicle Type:</label>
+    <select id="vehicle">
+        <option value="">All Vehicles</option>
+    </select>
+
+    <label for="severity">Severity:</label>
+    <select id="severity">
+        <option value="">All Severities</option>
+    </select>
+
+    <button type="button" onclick="resetFilters()">Reset Filters</button>
+</section>
+<section class="charts">
+    <h2>Accident Analysis</h2>
+
+    <div class="chart-box">
+        <h3>Accidents by Year</h3>
+        <canvas id="yearChart"></canvas>
+    </div>
+
+    <div class="chart-box">
+        <h3>Accidents by Severity</h3>
+        <canvas id="severityChart"></canvas>
+    </div>
+
+    <div class="chart-box">
+        <h3>Accidents by Vehicle Type</h3>
+        <canvas id="vehicleChart"></canvas>
+    </div>
+</section>
+
+        <section class="cards">
+
+            <div class="card">
+                <h3>Total Accidents</h3>
+                <p class="number">--</p>
+            </div>
+
+            <div class="card">
+                <h3>Total Deaths</h3>
+                <p class="number">--</p>
+            </div>
+
+            <div class="card">
+                <h3>Total Injuries</h3>
+                <p class="number">--</p>
+            </div>
+
+            <div class="card">
+                <h3>Regions Covered</h3>
+                <p class="number">--</p>
+            </div>
+
+        </section>
+
+        <p class="note">
+            Accident statistics will appear here after the dataset
+            and backend are connected.
+        </p>
+
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+const yearCtx = document.getElementById('yearChart');
+
+new Chart(yearCtx, {
+    type: 'bar',
+    data: {
+        labels: ['2021', '2022', '2023', '2024', '2025'],
+        datasets: [{
+            label: 'Accidents',
+            data: [0, 0, 0, 0, 0],
+            backgroundColor: '#3b82f6'
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+new Chart(document.getElementById('severityChart'), {
+    type: 'pie',
+    data: {
+        labels: ['Minor', 'Serious', 'Fatal'],
+        datasets: [{
+            data: [1, 1, 1],
+            backgroundColor: ['#60a5fa', '#fbbf24', '#f87171']
+        }]
+    },
+    options: {
+        responsive: true
+    }
+});
+
+new Chart(document.getElementById('vehicleChart'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Car', 'Bike', 'Truck', 'Other'],
+        datasets: [{
+            data: [1, 1, 1, 1],
+            backgroundColor: ['#818cf8', '#34d399', '#fb923c', '#94a3b8']
+        }]
+    },
+    options: {
+        responsive: true
+    }
+});
+</script>
+    
+
+
+</body>
+</html>
