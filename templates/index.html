@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Road Accident Data Analysis System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            color: #263238;
+        }
+
+        header {
+            background-color: #17365d;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        main {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #00000015;
+        }
+
+        h2 {
+            color: #17365d;
+        }
+
+        button {
+            background-color: #17365d;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #24558c;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Road Accident Data Analysis System</h1>
+        <p>Understand accident patterns and improve road safety</p>
+    </header>
+
+    <main>
+        <section class="card">
+            <h2>Welcome</h2>
+            <p>
+                This system helps analyse road accident data to identify
+                accident patterns, high-risk areas, and possible safety concerns.
+            </p>
+            <button onclick="showMessage()">Explore Dashboard</button>
+            <p id="message"></p>
+        </section>
+
+        <section class="card">
+            <h2>Accident Analysis</h2>
+            <p>Accident statistics and visualisations will appear here.</p>
+        </section>
+
+        <section class="card">
+            <h2>Road Safety Insights</h2>
+            <p>Important findings and road safety recommendations will appear here.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>Road Accident Data Analysis System | College Project</p>
+    </footer>
+
+    <script>
+        function showMessage() {
+            document.getElementById("message").textContent =
+                "Dashboard is being prepared. Accident analysis will be available soon!";
+        }
+    </script>
+</body>
+</html>
