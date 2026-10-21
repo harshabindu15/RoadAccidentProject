@@ -1,230 +1,556 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Road Accident Data Analysis</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Road Accident Data Analysis System</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f3f5f8;
-            color: #263238;
-        }
-
-        header {
-            background: #17365d;
-            color: white;
-            padding: 22px;
-        }
-
-        header h1 {
-            margin: 0 0 8px;
-        }
-
-        main {
-            max-width: 1050px;
-            margin: 25px auto;
-            padding: 0 18px;
-        }
-
-        .filter, .card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 7px #00000010;
-        }
-
-        .filter form {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        select, button {
-            padding: 10px 14px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        button {
-            background: #17365d;
-            color: white;
-            cursor: pointer;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-        }
-
-        .stat h3 {
-            color: #555;
-            font-size: 15px;
-            font-weight: normal;
-        }
-
-        .number {
-            font-size: 30px;
-            font-weight: bold;
-            color: #17365d;
-        }
-
-        .charts {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .chart-box {
-            min-width: 0;
-            height: 300px;
-        }
-
-        .error {
-            background: #fff0f0;
-            color: #a00000;
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 18px;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-        }
-    </style>
+<style>
+:root{
+  --bg:#f4f6fb;
+  --panel:#fff;
+  --ink:#20283a;
+  --muted:#6d778b;
+  --line:#e4e9f2;
+  --accent:#4f46e5;
+  --red:#e45867;
+  --blue:#3b82f6;
+  --green:#159a72;
+  --amber:#d98a20;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 Arial,Helvetica,sans-serif}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:235px;flex-shrink:0;background:#20243b;color:#fff;padding:26px 16px}
+.brand{font-size:18px;font-weight:700;line-height:1.4;margin:0 8px 30px}
+.brand span{display:block;color:#b9baff;font-size:13px;font-weight:500}
+.nav a{display:block;color:#d6d9e8;text-decoration:none;padding:12px 13px;border-radius:9px;margin:5px 0}
+.nav a:hover,.nav a.active{background:#4945a8;color:#fff}
+.main{min-width:0;flex:1;padding:28px}
+.top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;flex-wrap:wrap;margin-bottom:22px}
+h1{font-size:27px;margin:0 0 5px}
+h2{font-size:19px;margin:0 0 5px}
+h3{font-size:15px;margin:0 0 15px}
+p{color:var(--muted);margin:0;font-size:13px}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:1.2px;color:var(--accent);margin-bottom:7px}
+.panel,.stat,.chart-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 16px rgba(26,38,70,.025)}
+.filters{display:flex;gap:12px;align-items:end;padding:18px;margin-bottom:16px;max-width:620px}
+.filters>div{flex:1}
+label{display:block;font-size:11px;font-weight:700;letter-spacing:.4px;color:#606b80;margin-bottom:7px}
+input{width:100%;padding:12px;border:1px solid #d9dfeb;border-radius:8px;background:#fff;color:var(--ink);font:inherit}
+button{border:0;border-radius:8px;padding:12px 16px;font-weight:700;cursor:pointer;background:var(--accent);color:white;white-space:nowrap}
+button:disabled{opacity:.6;cursor:wait}
+.status{padding:12px 15px;border-radius:9px;background:#eeefff;color:#4540a0;margin-bottom:20px}
+.status.error{background:#fff0f1;color:#a82e3a}
+.status.success{background:#e9f8f1;color:#16724e}
+.section{margin:26px 0;scroll-margin-top:18px}
+.section-head{margin-bottom:15px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.stat{padding:19px;border-top:3px solid var(--accent)}
+.stat.red{border-top-color:var(--red)}
+.stat.blue{border-top-color:var(--blue)}
+.stat.green{border-top-color:var(--green)}
+.stat-label{font-size:11px;letter-spacing:.6px;font-weight:700;color:var(--muted)}
+.stat-value{font-size:27px;font-weight:700;margin:9px 0 4px;overflow-wrap:anywhere}
+.stat-note{font-size:11px;color:var(--muted)}
+.charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.chart-card{padding:20px;min-width:0}
+.chart-card.wide{grid-column:1/-1}
+.chart-box{height:280px;position:relative}
+.table-panel{padding:20px}
+.table-controls{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;margin:18px 0}
+select{width:100%;padding:11px 12px;border:1px solid #d9dfeb;border-radius:8px;background:#fff;color:var(--ink);font:inherit}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:760px;font-size:12px}
+th,td{padding:12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:#f7f8fc;color:#687287;font-size:11px;letter-spacing:.3px}
+tbody tr:hover{background:#fafaff}
+.pill{display:inline-block;padding:4px 8px;border-radius:20px;background:#efedff;color:#5148b8;font-size:11px}
+.empty{text-align:center;color:var(--muted);padding:30px}
+@media(max-width:1050px){
+.sidebar{width:200px}
+.stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:720px){
+.layout{display:block}
+.sidebar{width:100%;padding:15px}
+.brand{margin-bottom:12px}
+.nav{display:flex;overflow-x:auto;gap:5px}
+.nav a{white-space:nowrap;padding:10px}
+.main{padding:16px}
+h1{font-size:23px}
+.filters{flex-direction:column;align-items:stretch;max-width:none}
+.charts{grid-template-columns:1fr}
+.chart-card.wide{grid-column:auto}
+.chart-box{height:250px}
+.stats{gap:9px}
+.stat{padding:14px}
+.stat-value{font-size:22px}
+.table-controls{grid-template-columns:1fr}
+}
+</style>
 </head>
 
 <body>
-<header>
-    <h1>Road Accident Data Analysis System</h1>
-    <p>Accident statistics and patterns for the selected year</p>
+<div class="layout">
+
+<aside class="sidebar">
+  <div class="brand">
+    🚦 Road Accident
+    <span>Data Analysis System</span>
+  </div>
+
+  <nav class="nav">
+    <a class="active" href="#overview">📊 Overview</a>
+    <a href="#trends">📈 Accident Trends</a>
+    <a href="#locations">📍 Location Analysis</a>
+    <a href="#severity">⚠️ Severity Analysis</a>
+    <a href="#records">📋 Accident Records</a>
+  </nav>
+</aside>
+
+<main class="main">
+
+<header class="top">
+  <div>
+    <div class="eyebrow">ROAD SAFETY INSIGHTS</div>
+    <h1>Road Accident Dashboard</h1>
+    <p>Enter a year to explore road accident data.</p>
+  </div>
 </header>
 
-<main>
-    <section class="filter">
-        <form method="POST" action="/">
-            <label for="year">Select year:</label>
+<section class="panel filters" id="overview">
+  <div>
+    <label for="yearInput">SELECT YEAR</label>
+    <input id="yearInput" type="number" min="1900" max="2100" placeholder="Enter year (e.g. 2023)">
+  </div>
+  <button id="searchButton">View Data</button>
+</section>
 
-            <select name="year" id="year">
-                {% for y in range(2011, 2027) %}
-                <option value="{{ y }}"
-                    {% if selected_year|string == y|string %}selected{% endif %}>
-                    {{ y }}
-                </option>
-                {% endfor %}
-            </select>
+<div id="statusMessage" class="status">
+  Enter a year and click View Data.
+</div>
 
-            <button type="submit">View Dashboard</button>
-        </form>
-    </section>
+<section class="section">
+  <div class="section-head">
+    <h2>Overview</h2>
+    <p>Summary of road accidents for the selected year.</p>
+  </div>
 
-    {% if error %}
-    <div class="error">
-        Could not load the data: {{ error }}
+  <div class="stats">
+    <article class="stat">
+      <div class="stat-label">RECORDED ACCIDENTS</div>
+      <div class="stat-value" id="totalAccidents">—</div>
+      <div class="stat-note">Total recorded accidents</div>
+    </article>
+
+    <article class="stat red">
+      <div class="stat-label">FATALITIES</div>
+      <div class="stat-value" id="totalDeaths">—</div>
+      <div class="stat-note">Recorded deaths, if available</div>
+    </article>
+
+    <article class="stat blue">
+      <div class="stat-label">INJURIES</div>
+      <div class="stat-value" id="totalInjuries">—</div>
+      <div class="stat-note">Recorded injuries, if available</div>
+    </article>
+
+    <article class="stat green">
+      <div class="stat-label">MISSING / INCOMPLETE</div>
+      <div class="stat-value" id="missingCount">—</div>
+      <div class="stat-note">Records with missing information</div>
+    </article>
+  </div>
+</section>
+
+<section class="section" id="trends">
+  <div class="section-head">
+    <h2>Accident Trends</h2>
+    <p>Accident counts across months and time of day.</p>
+  </div>
+
+  <div class="charts">
+    <article class="chart-card">
+      <h3>Month-wise Accident Trend</h3>
+      <div class="chart-box"><canvas id="monthlyChart"></canvas></div>
+    </article>
+
+    <article class="chart-card">
+      <h3>Accidents by Time of Day</h3>
+      <div class="chart-box"><canvas id="timeChart"></canvas></div>
+    </article>
+  </div>
+</section>
+
+<section class="section" id="locations">
+  <div class="section-head">
+    <h2>Location Analysis</h2>
+    <p>Compare accident counts by location and vehicle type.</p>
+  </div>
+
+  <div class="charts">
+    <article class="chart-card wide">
+      <h3>Locations with Higher Accident Counts</h3>
+      <div class="chart-box"><canvas id="locationChart"></canvas></div>
+    </article>
+
+    <article class="chart-card">
+      <h3>Vehicle-Type Comparison</h3>
+      <div class="chart-box"><canvas id="vehicleChart"></canvas></div>
+    </article>
+
+    <article class="chart-card" id="severity">
+      <h3>Severity Distribution</h3>
+      <div class="chart-box"><canvas id="severityChart"></canvas></div>
+    </article>
+  </div>
+</section>
+
+<section class="section" id="records">
+  <div class="section-head">
+    <h2>Accident Records</h2>
+    <p>Detailed accident records for the selected year.</p>
+  </div>
+
+  <div class="panel table-panel">
+    <div class="table-controls">
+      <div>
+        <label for="recordSearch">SEARCH RECORDS</label>
+        <input id="recordSearch" type="text" placeholder="Search location, road, vehicle...">
+      </div>
+
+      <div>
+        <label for="tableSeverity">SEVERITY</label>
+        <select id="tableSeverity">
+          <option value="">All severity levels</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="tableVehicle">VEHICLE TYPE</label>
+        <select id="tableVehicle">
+          <option value="">All vehicle types</option>
+        </select>
+      </div>
     </div>
-    {% endif %}
 
-    <h2>Overview — {{ selected_year }}</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Region / Location</th>
+            <th>Road</th>
+            <th>Vehicle Type</th>
+            <th>Severity</th>
+            <th>Weather</th>
+          </tr>
+        </thead>
 
-    <section class="stats">
-        <div class="card stat">
-            <h3>Total Accidents</h3>
-            <div class="number">{{ data.get('total', 0) }}</div>
-        </div>
+        <tbody id="recordsBody">
+          <tr>
+            <td class="empty" colspan="7">Enter a year to load accident records.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-        <div class="card stat">
-            <h3>Total Deaths</h3>
-            <div class="number">{{ data.get('deaths', 0) }}</div>
-        </div>
+    <p id="recordCount" style="margin-top:14px">No records loaded.</p>
+  </div>
+</section>
 
-        <div class="card stat">
-            <h3>Total Injuries</h3>
-            <div class="number">{{ data.get('injuries', 0) }}</div>
-        </div>
-    </section>
-
-    <h2>Accident Analysis</h2>
-
-    <section class="charts">
-        <div class="card">
-            <h3>Accidents by Weather</h3>
-            <div class="chart-box">
-                <canvas id="weatherChart"></canvas>
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>Weather-wise Accident Count</h3>
-            <div class="chart-box">
-                <canvas id="weatherBarChart"></canvas>
-            </div>
-        </div>
-    </section>
-
-    <section class="card">
-        <h2>About the Data</h2>
-        <p>
-            Use the year filter to view the available accident records.
-            The charts show how recorded accidents are distributed by weather.
-        </p>
-        <p><strong>Note:</strong> This project currently uses synthetic sample
-        data for development. These figures are not official accident statistics.</p>
-    </section>
 </main>
-
-<footer>
-    Road Accident Data Analysis System | College Project
-</footer>
+</div>
 
 <script>
-    const weatherLabels = {{ weather_data | map(attribute=0) | list | tojson }};
-    const weatherCounts = {{ weather_data | map(attribute=1) | list | tojson }};
+const charts = {};
+let allRecords = [];
 
-    if (weatherLabels.length > 0) {
-        new Chart(document.getElementById("weatherChart"), {
-            type: "pie",
-            data: {
-                labels: weatherLabels,
-                datasets: [{
-                    data: weatherCounts
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
+const $ = id => document.getElementById(id);
 
-        new Chart(document.getElementById("weatherBarChart"), {
-            type: "bar",
-            data: {
-                labels: weatherLabels,
-                datasets: [{
-                    label: "Number of accidents",
-                    data: weatherCounts
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
+function formatNumber(value) {
+  if (value === null || value === undefined || value === "") return "—";
+  const number = Number(value);
+  return Number.isFinite(number) ? number.toLocaleString("en-IN") : "—";
+}
+
+function setText(id, value) {
+  $(id).textContent = formatNumber(value);
+}
+
+function createChart(id, type, labels, datasets) {
+  const canvas = $(id);
+  if (!canvas) return;
+
+  if (charts[id]) charts[id].destroy();
+
+  charts[id] = new Chart(canvas, {
+    type,
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      plugins: {
+        legend: {
+          display: type === "pie" || datasets.length > 1,
+          position: "bottom"
+        }
+      },
+      scales: ["bar", "line"].includes(type)
+        ? {
+            y: {
+              beginAtZero: true,
+              ticks: { precision: 0 }
             }
-        });
+          }
+        : {}
     }
+  });
+}
+
+function makeDataset(label, values, color) {
+  return {
+    label,
+    data: values,
+    backgroundColor: color,
+    borderColor: color,
+    borderWidth: 2,
+    borderRadius: 5,
+    tension: 0.3
+  };
+}
+
+function fillSelect(id, values, firstLabel) {
+  const select = $(id);
+  const oldValue = select.value;
+
+  select.innerHTML = "";
+
+  const first = document.createElement("option");
+  first.value = "";
+  first.textContent = firstLabel;
+  select.appendChild(first);
+
+  [...new Set(values.filter(value =>
+    value !== null && value !== undefined && value !== ""
+  ))].sort().forEach(value => {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = value;
+    select.appendChild(option);
+  });
+
+  if ([...select.options].some(option => option.value === oldValue)) {
+    select.value = oldValue;
+  }
+}
+
+function renderRecords(records) {
+  allRecords = Array.isArray(records) ? records : [];
+
+  const query = $("recordSearch").value.toLowerCase().trim();
+  const severity = $("tableSeverity").value;
+  const vehicle = $("tableVehicle").value;
+
+  const filteredRecords = allRecords.filter(record => {
+    const searchableText = [
+      record.date,
+      record.time,
+      record.location,
+      record.region,
+      record.road_name,
+      record.vehicle_type,
+      record.severity,
+      record.weather
+    ].join(" ").toLowerCase();
+
+    return searchableText.includes(query) &&
+      (!severity || record.severity === severity) &&
+      (!vehicle || record.vehicle_type === vehicle);
+  });
+
+  const body = $("recordsBody");
+  body.innerHTML = "";
+
+  if (!filteredRecords.length) {
+    body.innerHTML =
+      '<tr><td class="empty" colspan="7">No matching records found.</td></tr>';
+  } else {
+    filteredRecords.forEach(record => {
+      const row = document.createElement("tr");
+
+      [
+        record.date || "—",
+        record.time || "—",
+        record.region || record.location || "—",
+        record.road_name || "—",
+        record.vehicle_type || "—",
+        record.severity || "—",
+        record.weather || "—"
+      ].forEach((value, index) => {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+
+        if (index === 5) {
+          const pill = document.createElement("span");
+          pill.className = "pill";
+          pill.textContent = value;
+          cell.textContent = "";
+          cell.appendChild(pill);
+        }
+
+        row.appendChild(cell);
+      });
+
+      body.appendChild(row);
+    });
+  }
+
+  $("recordCount").textContent =
+    `Showing ${filteredRecords.length.toLocaleString("en-IN")} of ${allRecords.length.toLocaleString("en-IN")} records.`;
+}
+
+function updateDashboard(data) {
+  const summary = data.summary || {};
+
+  setText("totalAccidents", summary.total_accidents);
+  setText("totalDeaths", summary.total_deaths);
+  setText("totalInjuries", summary.total_injuries);
+  setText("missingCount", summary.missing_records);
+
+  const chartData = data.charts || {};
+
+  const monthly = chartData.monthly || [];
+  const times = chartData.time_of_day || [];
+  const locations = chartData.locations || [];
+  const vehicles = chartData.vehicle_types || [];
+  const severities = chartData.severity || [];
+
+  createChart(
+    "monthlyChart",
+    "line",
+    monthly.map(item => item.month),
+    [makeDataset(
+      "Accidents",
+      monthly.map(item => Number(item.count || 0)),
+      "#4f46e5"
+    )]
+  );
+
+  createChart(
+    "timeChart",
+    "bar",
+    times.map(item => item.period),
+    [makeDataset(
+      "Accidents",
+      times.map(item => Number(item.count || 0)),
+      "#d98a20"
+    )]
+  );
+
+  createChart(
+    "locationChart",
+    "bar",
+    locations.map(item => item.location),
+    [makeDataset(
+      "Accidents",
+      locations.map(item => Number(item.count || 0)),
+      "#4f46e5"
+    )]
+  );
+
+  createChart(
+    "vehicleChart",
+    "bar",
+    vehicles.map(item => item.vehicle_type),
+    [makeDataset(
+      "Accidents",
+      vehicles.map(item => Number(item.count || 0)),
+      "#159a72"
+    )]
+  );
+
+  createChart(
+    "severityChart",
+    "pie",
+    severities.map(item => item.severity),
+    [makeDataset(
+      "Accidents",
+      severities.map(item => Number(item.count || 0)),
+      ["#e45867", "#d98a20", "#159a72", "#4f46e5", "#3b82f6"]
+    )]
+  );
+
+  const filters = data.filters || {};
+
+  fillSelect("tableSeverity", filters.severities || [], "All severity levels");
+  fillSelect("tableVehicle", filters.vehicle_types || [], "All vehicle types");
+
+  renderRecords(data.records || []);
+
+  const status = $("statusMessage");
+  status.className = "status success";
+  status.textContent = `Accident data loaded for ${data.year ?? $("yearInput").value}.`;
+}
+
+async function searchYear() {
+  const year = $("yearInput").value.trim();
+
+  if (!year) {
+    showError("Please enter a year.");
+    return;
+  }
+
+  const button = $("searchButton");
+  button.disabled = true;
+  button.textContent = "Loading...";
+
+  const status = $("statusMessage");
+  status.className = "status";
+  status.textContent = `Loading accident data for ${year}...`;
+
+  try {
+    const response = await fetch(
+      "/api/dashboard?" + new URLSearchParams({ year }).toString()
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Unable to load accident data.");
+    }
+
+    updateDashboard(data);
+  } catch (error) {
+    showError(
+      error.message ||
+      "Could not load data. Check that the Flask backend has a matching /api/dashboard route."
+    );
+  } finally {
+    button.disabled = false;
+    button.textContent = "View Data";
+  }
+}
+
+function showError(message) {
+  const status = $("statusMessage");
+  status.className = "status error";
+  status.textContent = message;
+}
+
+$("searchButton").addEventListener("click", searchYear);
+
+$("yearInput").addEventListener("keydown", event => {
+  if (event.key === "Enter") searchYear();
+});
+
+$("recordSearch").addEventListener("input", () => renderRecords(allRecords));
+$("tableSeverity").addEventListener("change", () => renderRecords(allRecords));
+$("tableVehicle").addEventListener("change", () => renderRecords(allRecords));
 </script>
 </body>
 </html>
