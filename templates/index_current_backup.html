@@ -1,0 +1,788 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Road Accident Data Analysis System</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root{
+  --bg:#f4f6fb;
+  --panel:#fff;
+  --ink:#20283a;
+  --muted:#6d778b;
+  --line:#e4e9f2;
+  --accent:#4f46e5;
+  
+  --accent:#4f46e5;
+  --red:#d98a20;
+  --blue:#3b82f6;
+  --green:#159a72;
+  --amber:#d98a20;
+
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 Arial,Helvetica,sans-serif}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:235px;flex-shrink:0;background:#20243b;color:#fff;padding:26px 16px}
+.brand{font-size:18px;font-weight:700;line-height:1.4;margin:0 8px 30px}
+.brand span{display:block;color:#b9baff;font-size:13px;font-weight:500}
+.nav a{display:block;color:#d6d9e8;text-decoration:none;padding:12px 13px;border-radius:9px;margin:5px 0}
+.nav a:hover,.nav a.active{background:#4945a8;color:#fff}
+.main{min-width:0;flex:1;padding:28px}
+.top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;flex-wrap:wrap;margin-bottom:22px}
+h1{font-size:27px;margin:0 0 5px}
+h2{font-size:19px;margin:0 0 5px}
+h3{font-size:15px;margin:0 0 15px}
+p{color:var(--muted);margin:0;font-size:13px}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:1.2px;color:var(--accent);margin-bottom:7px}
+.panel,.stat,.chart-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 16px rgba(26,38,70,.025)}
+.filters{display:flex;gap:12px;align-items:end;padding:18px;margin-bottom:16px;max-width:620px}
+.filters>div{flex:1}
+label{display:block;font-size:11px;font-weight:700;letter-spacing:.4px;color:#606b80;margin-bottom:7px}
+input{width:100%;padding:12px;border:1px solid #d9dfeb;border-radius:8px;background:#fff;color:var(--ink);font:inherit}
+button{border:0;border-radius:8px;padding:12px 16px;font-weight:700;cursor:pointer;background:var(--accent);color:white;white-space:nowrap}
+button:disabled{opacity:.6;cursor:wait}
+.status{padding:12px 15px;border-radius:9px;background:#eeefff;color:#4540a0;margin-bottom:20px}
+.status.error{background:#fff0f1;color:#a82e3a}
+.status.success{background:#e9f8f1;color:#16724e}
+.section{margin:26px 0;scroll-margin-top:18px}
+.page-section {
+  display: none;
+}
+
+.page-section.active {
+  display: block;
+}
+.section-head{margin-bottom:15px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.stat{padding:19px;border-top:3px solid var(--accent)}
+.stat.red{border-top-color:var(--red)}
+.stat.blue{border-top-color:var(--blue)}
+.stat.green{border-top-color:var(--green)}
+.stat-label{font-size:11px;letter-spacing:.6px;font-weight:700;color:var(--muted)}
+.stat-value{font-size:27px;font-weight:700;margin:9px 0 4px;overflow-wrap:anywhere}
+.stat-note{font-size:11px;color:var(--muted)}
+.charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.chart-card{padding:20px;min-width:0}
+.chart-card.wide{grid-column:1/-1}
+.chart-box{height:280px;position:relative}
+.table-panel{padding:20px}
+.table-controls{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;margin:18px 0}
+select{width:100%;padding:11px 12px;border:1px solid #d9dfeb;border-radius:8px;background:#fff;color:var(--ink);font:inherit}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:760px;font-size:12px}
+th,td{padding:12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:#f7f8fc;color:#687287;font-size:11px;letter-spacing:.3px}
+tbody tr:hover{background:#fafaff}
+.pill{display:inline-block;padding:4px 8px;border-radius:20px;background:#efedff;color:#5148b8;font-size:11px}
+.empty{text-align:center;color:var(--muted);padding:30px}
+@media(max-width:1050px){
+.sidebar{width:200px}
+.stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:720px){
+.layout{display:block}
+.sidebar{width:100%;padding:15px}
+.brand{margin-bottom:12px}
+.nav{display:flex;overflow-x:auto;gap:5px}
+.nav a{white-space:nowrap;padding:10px}
+.main{padding:16px}
+h1{font-size:23px}
+.filters{flex-direction:column;align-items:stretch;max-width:none}
+.charts{grid-template-columns:1fr}
+.chart-card.wide{grid-column:auto}
+.chart-box{height:250px}
+.stats{gap:9px}
+.stat{padding:14px}
+.stat-value{font-size:22px}
+.table-controls{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+<div class="layout">
+
+<aside class="sidebar">
+  <div class="brand">
+    &#128658; Road Accident
+    <span>Data Analysis System</span>
+  </div>
+
+  <nav class="nav">
+    <a class="active" href="#overview">&#128202; Overview</a>
+    <a href="#trends">&#128200; Accident Trends</a>
+    <a href="#locations">&#128205; Location Analysis</a>
+    <a href="#severity">&#9889; Severity Analysis</a>
+    <a href="#records">&#128205;‹ Accident Records</a>
+  </nav>
+</aside>
+
+<main class="main">
+
+<header class="top">
+  <div>
+    <div class="eyebrow">ROAD SAFETY INSIGHTS</div>
+    <h1>Road Accident Dashboard</h1>
+    <p>Enter a year to explore road accident data.</p>
+  </div>
+</header>
+
+
+<section class="section page-section active" id="overview">
+
+  <div class="section-head">
+    <h2>Road Accident Overview</h2>
+    <p>Explore accident records, casualties and key road-safety indicators for your selected year.</p>
+  </div>
+
+  <div class="panel filters">
+    <div>
+      <label for="yearInput">SELECT YEAR</label>
+      <input id="yearInput" type="number" min="2011" max="2026"
+             placeholder="Enter year (2011â€“2026)">
+    </div>
+    <button id="searchButton">View Data</button>
+  </div>
+
+  <div id="statusMessage" class="status">
+    Select a year and click View Data to explore the available records.
+  </div>
+
+  <div class="section-head">
+    <h2>Key Statistics</h2>
+    <p>A quick summary of accident records for the selected year.</p>
+  </div>
+
+  <div class="stats">
+    <article class="stat">
+      <div class="stat-label">RECORDED ACCIDENTS</div>
+      <div class="stat-value" id="totalAccidents">â€”</div>
+      <div class="stat-note">Total accident records for the selected year</div>
+    </article>
+
+    <article class="stat red">
+      <div class="stat-label">FATALITIES</div>
+      <div class="stat-value" id="totalDeaths">â€”</div>
+      <div class="stat-note">Total deaths recorded in the available data</div>
+    </article>
+
+    <article class="stat blue">
+      <div class="stat-label">INJURIES</div>
+      <div class="stat-value" id="totalInjuries">â€”</div>
+      <div class="stat-note">Total injuries recorded in the available data</div>
+    </article>
+
+    <article class="stat green">
+      <div class="stat-label">INCOMPLETE RECORDS</div>
+      <div class="stat-value" id="missingCount">â€”</div>
+      <div class="stat-note">Records with missing or incomplete information</div>
+    </article>
+  </div>
+
+  <div class="panel" style="margin-top:24px;padding:22px;">
+    <h3>Understanding the Dashboard</h3>
+    <p>
+      This dashboard helps explore road accident records through summary
+      statistics, trend charts, location comparisons, severity distribution
+      and detailed accident records.
+    </p>
+
+    <div class="stats" style="margin-top:18px;">
+      <article class="stat">
+        <div class="stat-label">ACCIDENT TRENDS</div>
+        <div class="stat-note">
+          Compare accident patterns and changes across the available years.
+        </div>
+      </article>
+
+      <article class="stat">
+        <div class="stat-label">LOCATION ANALYSIS</div>
+        <div class="stat-note">
+          Identify locations with higher recorded accident counts.
+        </div>
+      </article>
+
+      <article class="stat">
+        <div class="stat-label">SEVERITY ANALYSIS</div>
+        <div class="stat-note">
+          Examine the recorded distribution of accident severity.
+        </div>
+      </article>
+
+      <article class="stat">
+        <div class="stat-label">DETAILED RECORDS</div>
+        <div class="stat-note">
+          Search available records by location, vehicle and other fields.
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:24px;padding:22px;">
+    <h3>Road Safety: Key Areas to Examine</h3>
+    <p>
+      Use the available charts and records to investigate when accidents occur,
+      which locations have more recorded incidents, which vehicle categories
+      appear most frequently, and how accident severity varies.
+    </p>
+    <p>
+      These observations describe the data available in the system and should
+      not be treated as official national statistics unless verified against
+      an authoritative source.
+    </p>
+  </div>
+
+</section>
+
+<section class="section page-section" id="trends">
+  <div class="section-head">
+    <h2>Accident Trends</h2>
+    <p>Accident counts across months and time of day.</p>
+  </div>
+
+  <div class="charts">
+    <article class="chart-card">
+      <h3>Month-wise Accident Trend</h3>
+      <div class="chart-box"><canvas id="monthlyChart"></canvas></div>
+    </article>
+
+    <article class="chart-card">
+      <h3>Accidents by Time of Day</h3>
+      <div class="chart-box"><canvas id="timeChart"></canvas></div>
+    </article>
+  </div>
+</section>
+
+<section class="section page-section" id="locations">
+  <div class="section-head">
+    <h2>Location Analysis</h2>
+    <p>Compare accident counts by location and vehicle type.</p>
+  </div>
+
+  <div class="charts">
+    <article class="chart-card wide">
+      <h3>Locations with Higher Accident Counts</h3>
+      <div class="chart-box"><canvas id="locationChart"></canvas></div>
+    </article>
+
+    <article class="chart-card">
+      <h3>Vehicle-Type Comparison</h3>
+      <div class="chart-box"><canvas id="vehicleChart"></canvas></div>
+    </article>
+
+    
+  </div>
+</section>
+
+<section class="section page-section" id="severity">
+  <div class="section-head">
+    <h2>Severity Analysis</h2>
+    <p>Explore the distribution of accident severity in the selected year.</p>
+  </div>
+
+  <div class="panel" style="padding:20px;margin-bottom:20px;">
+    <h3>Understanding Accident Severity</h3>
+    <p>
+      Severity analysis helps compare the recorded accident categories
+      and understand how outcomes are distributed across the available data.
+    </p>
+  </div>
+
+  <div class="charts">
+    <article class="chart-card wide">
+      <h3>Severity Distribution</h3>
+      <div class="chart-box">
+        <canvas id="severityChart"></canvas>
+      </div>
+    </article>
+  </div>
+
+
+  <div class="section-head" style="margin-top:28px;">
+    <h2>Severity Statistics</h2>
+    <p>Counts and percentage distribution from the selected year's records.</p>
+  </div>
+
+  <div class="stats">
+    <article class="stat">
+      <div class="stat-label">CATEGORIZED ACCIDENTS</div>
+      <div class="stat-value" id="severityTotal">â€”</div>
+    </article>
+
+    <article class="stat blue">
+      <div class="stat-label">SEVERITY CATEGORIES</div>
+      <div class="stat-value" id="severityCategoryCount">â€”</div>
+    </article>
+
+    <article class="stat red">
+      <div class="stat-label">HIGHEST COUNT CATEGORY</div>
+      <div class="stat-value" id="topSeverityCategory">â€”</div>
+    </article>
+  </div>
+
+  <div class="panel table-panel" style="margin-top:22px;">
+    <h3>Severity-wise Accident Details</h3>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Severity Category</th>
+            <th>Accident Count</th>
+            <th>Percentage</th>
+          </tr>
+        </thead>
+        <tbody id="severityTableBody">
+          <tr>
+            <td colspan="3">Select a year to load data.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+<section class="section page-section" id="records">
+  <div class="section-head">
+    <h2>Accident Records</h2>
+    <p>Detailed accident records for the selected year.</p>
+  </div>
+
+  <div class="panel table-panel">
+    <div class="table-controls">
+      <div>
+        <label for="recordSearch">SEARCH RECORDS</label>
+        <input id="recordSearch" type="text" placeholder="Search location, road, vehicle...">
+      </div>
+
+      <div>
+        <label for="tableSeverity">SEVERITY</label>
+        <select id="tableSeverity">
+          <option value="">All severity levels</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="tableVehicle">VEHICLE TYPE</label>
+        <select id="tableVehicle">
+          <option value="">All vehicle types</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Region / Location</th>
+            <th>Road</th>
+            <th>Vehicle Type</th>
+            <th>Severity</th>
+            <th>Weather</th>
+          </tr>
+        </thead>
+
+        <tbody id="recordsBody">
+          <tr>
+            <td class="empty" colspan="7">Enter a year to load accident records.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p id="recordCount" style="margin-top:14px">No records loaded.</p>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+const charts = {};
+let allRecords = [];
+
+const $ = id => document.getElementById(id);
+
+function formatNumber(value) {
+  if (value === null || value === undefined || value === "") return "â€”";
+  const number = Number(value);
+  return Number.isFinite(number) ? number.toLocaleString("en-IN") : "â€”";
+}
+
+function setText(id, value) {
+  $(id).textContent = formatNumber(value);
+}
+
+function createChart(id, type, labels, datasets) {
+  const canvas = $(id);
+  if (!canvas) return;
+
+  if (charts[id]) charts[id].destroy();
+
+  charts[id] = new Chart(canvas, {
+    type,
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      plugins: {
+        legend: {
+          display: type === "pie" || datasets.length > 1,
+          position: "bottom"
+        }
+      },
+      scales: ["bar", "line"].includes(type)
+        ? {
+            y: {
+              beginAtZero: true,
+              ticks: { precision: 0 }
+            }
+          }
+        : {}
+    }
+  });
+}
+
+function makeDataset(label, values, color) {
+  return {
+    label,
+    data: values,
+    backgroundColor: color,
+    borderColor: color,
+    borderWidth: 2,
+    borderRadius: 5,
+    tension: 0.3
+  };
+}
+
+function fillSelect(id, values, firstLabel) {
+  const select = $(id);
+  const oldValue = select.value;
+
+  select.innerHTML = "";
+
+  const first = document.createElement("option");
+  first.value = "";
+  first.textContent = firstLabel;
+  select.appendChild(first);
+
+  [...new Set(values.filter(value =>
+    value !== null && value !== undefined && value !== ""
+  ))].sort().forEach(value => {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = value;
+    select.appendChild(option);
+  });
+
+  if ([...select.options].some(option => option.value === oldValue)) {
+    select.value = oldValue;
+  }
+}
+
+function renderRecords(records) {
+  allRecords = Array.isArray(records) ? records : [];
+
+  const query = $("recordSearch").value.toLowerCase().trim();
+  const severity = $("tableSeverity").value;
+  const vehicle = $("tableVehicle").value;
+
+  const filteredRecords = allRecords.filter(record => {
+    const searchableText = [
+      record.date,
+      record.time,
+      record.location,
+      record.region,
+      record.road_name,
+      record.vehicle_type,
+      record.severity,
+      record.weather
+    ].join(" ").toLowerCase();
+
+    return searchableText.includes(query) &&
+      (!severity || record.severity === severity) &&
+      (!vehicle || record.vehicle_type === vehicle);
+  });
+
+  const body = $("recordsBody");
+  body.innerHTML = "";
+
+  if (!filteredRecords.length) {
+    body.innerHTML =
+      '<tr><td class="empty" colspan="7">No matching records found.</td></tr>';
+  } else {
+    filteredRecords.forEach(record => {
+      const row = document.createElement("tr");
+
+      [
+        record.date || "â€”",
+        record.time || "â€”",
+        record.region || record.location || "â€”",
+        record.road_name || "â€”",
+        record.vehicle_type || "â€”",
+        record.severity || "â€”",
+        record.weather || "â€”"
+      ].forEach((value, index) => {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+
+        if (index === 5) {
+          const pill = document.createElement("span");
+          pill.className = "pill";
+          pill.textContent = value;
+          cell.textContent = "";
+          cell.appendChild(pill);
+        }
+
+        row.appendChild(cell);
+      });
+
+      body.appendChild(row);
+    });
+  }
+
+  $("recordCount").textContent =
+    `Showing ${filteredRecords.length.toLocaleString("en-IN")} of ${allRecords.length.toLocaleString("en-IN")} records.`;
+}
+
+function updateDashboard(data) {
+  const summary = data.summary || {};
+
+  setText("totalAccidents", summary.total_accidents);
+  setText("totalDeaths", summary.total_deaths);
+  setText("totalInjuries", summary.total_injuries);
+  setText("missingCount", summary.missing_records);
+
+  const chartData = data.charts || {};
+
+  const monthly = chartData.monthly || [];
+  const times = chartData.time_of_day || [];
+  const locations = chartData.locations || [];
+  const vehicles = chartData.vehicle_types || [];
+  const severities = chartData.severity || [];
+  const severityTotal = severities.reduce(
+    (sum, item) => sum + Number(item.count || 0),
+    0
+  );
+
+  const topSeverity = [...severities].sort(
+    (a, b) => Number(b.count || 0) - Number(a.count || 0)
+  )[0];
+
+  $("severityTotal").textContent =
+    severityTotal.toLocaleString("en-IN");
+
+  $("severityCategoryCount").textContent = severities.length;
+
+  $("topSeverityCategory").textContent =
+    topSeverity ? topSeverity.severity : "â€”";
+
+  const severityBody = $("severityTableBody");
+  severityBody.innerHTML = "";
+
+  if (severities.length === 0) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+
+    cell.colSpan = 3;
+    cell.textContent = "No severity data available for this year.";
+
+    row.appendChild(cell);
+    severityBody.appendChild(row);
+  } else {
+    severities.forEach(item => {
+      const count = Number(item.count || 0);
+      const percentage = severityTotal > 0
+        ? ((count / severityTotal) * 100).toFixed(1)
+        : "0.0";
+
+      const row = document.createElement("tr");
+
+      [
+        item.severity || "Unknown",
+        count.toLocaleString("en-IN"),
+        percentage + "%"
+      ].forEach(value => {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+        row.appendChild(cell);
+      });
+
+      severityBody.appendChild(row);
+    });
+  }
+
+  createChart(
+    "monthlyChart",
+    "line",
+    monthly.map(item => item.month),
+    [makeDataset(
+      "Accidents",
+      monthly.map(item => Number(item.count || 0)),
+      "#4f46e5"
+    )]
+  );
+
+  createChart(
+    "timeChart",
+    "bar",
+    times.map(item => item.period),
+    [makeDataset(
+      "Accidents",
+      times.map(item => Number(item.count || 0)),
+      "#d98a20"
+    )]
+  );
+
+  createChart(
+    "locationChart",
+    "bar",
+    locations.map(item => item.location),
+    [makeDataset(
+      "Accidents",
+      locations.map(item => Number(item.count || 0)),
+      "#4f46e5"
+    )]
+  );
+
+  createChart(
+    "vehicleChart",
+    "bar",
+    vehicles.map(item => item.vehicle_type),
+    [makeDataset(
+      "Accidents",
+      vehicles.map(item => Number(item.count || 0)),
+      "#159a72"
+    )]
+  );
+
+  createChart(
+    "severityChart",
+    "pie",
+    severities.map(item => item.severity),
+    [makeDataset(
+      "Accidents",
+      severities.map(item => Number(item.count || 0)),
+      ["#e45867", "#d98a20", "#159a72", "#4f46e5", "#3b82f6"]
+    )]
+  );
+
+  const filters = data.filters || {};
+
+  fillSelect("tableSeverity", filters.severities || [], "All severity levels");
+  fillSelect("tableVehicle", filters.vehicle_types || [], "All vehicle types");
+
+  renderRecords(data.records || []);
+
+  const status = $("statusMessage");
+  status.className = "status success";
+  status.textContent = `Accident data loaded for ${data.year ?? $("yearInput").value}.`;
+}
+
+async function searchYear() {
+  const year = $("yearInput").value.trim();
+
+  if (!year) {
+    showError("Please enter a year.");
+    return;
+  }
+
+  const button = $("searchButton");
+  button.disabled = true;
+  button.textContent = "Loading...";
+
+  const status = $("statusMessage");
+  status.className = "status";
+  status.textContent = `Loading accident data for ${year}...`;
+
+  try {
+    const response = await fetch(
+      "/api/dashboard?" + new URLSearchParams({ year }).toString()
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Unable to load accident data.");
+    }
+
+    updateDashboard(data);
+  } catch (error) {
+    showError(
+      error.message ||
+      "Could not load data. Check that the Flask backend has a matching /api/dashboard route."
+    );
+  } finally {
+    button.disabled = false;
+    button.textContent = "View Data";
+  }
+}
+
+function showError(message) {
+  const status = $("statusMessage");
+  status.className = "status error";
+  status.textContent = message;
+}
+
+// Sidebar section navigation
+function showSection(sectionId) {
+  const target = document.getElementById(sectionId);
+
+  if (!target || !target.classList.contains("page-section")) {
+    sectionId = "overview";
+  }
+
+  document.querySelectorAll(".page-section").forEach(section => {
+    section.classList.toggle("active", section.id === sectionId);
+  });
+
+  document.querySelectorAll(".nav a").forEach(link => {
+    link.classList.toggle(
+      "active",
+      link.getAttribute("href") === "#" + sectionId
+    );
+  });
+
+  if (window.location.hash !== "#" + sectionId) {
+    history.replaceState(null, "", "#" + sectionId);
+  }
+
+  window.scrollTo(0, 0);
+}
+
+document.querySelectorAll(".nav a").forEach(link => {
+  link.addEventListener("click", function (event) {
+    event.preventDefault();
+    showSection(this.getAttribute("href").substring(1));
+  });
+});
+
+// Open the section selected in the URL, or Overview by default
+showSection(window.location.hash.substring(1) || "overview");
+$("searchButton").addEventListener("click", searchYear);
+
+$("yearInput").addEventListener("keydown", event => {
+  if (event.key === "Enter") searchYear();
+});
+
+$("recordSearch").addEventListener("input", () => renderRecords(allRecords));
+$("tableSeverity").addEventListener("change", () => renderRecords(allRecords));
+$("tableVehicle").addEventListener("change", () => renderRecords(allRecords));
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

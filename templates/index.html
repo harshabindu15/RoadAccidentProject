@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -14,10 +14,13 @@
   --muted:#6d778b;
   --line:#e4e9f2;
   --accent:#4f46e5;
-  --red:#e45867;
+  
+  --accent:#4f46e5;
+  --red:#d98a20;
   --blue:#3b82f6;
   --green:#159a72;
   --amber:#d98a20;
+
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 Arial,Helvetica,sans-serif}
@@ -45,6 +48,13 @@ button:disabled{opacity:.6;cursor:wait}
 .status.error{background:#fff0f1;color:#a82e3a}
 .status.success{background:#e9f8f1;color:#16724e}
 .section{margin:26px 0;scroll-margin-top:18px}
+.page-section {
+  display: none;
+}
+
+.page-section.active {
+  display: block;
+}
 .section-head{margin-bottom:15px}
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
 .stat{padding:19px;border-top:3px solid var(--accent)}
@@ -97,16 +107,16 @@ h1{font-size:23px}
 
 <aside class="sidebar">
   <div class="brand">
-    🚦 Road Accident
+    &#128658; Road Accident
     <span>Data Analysis System</span>
   </div>
 
   <nav class="nav">
-    <a class="active" href="#overview">📊 Overview</a>
-    <a href="#trends">📈 Accident Trends</a>
-    <a href="#locations">📍 Location Analysis</a>
-    <a href="#severity">⚠️ Severity Analysis</a>
-    <a href="#records">📋 Accident Records</a>
+    <a class="active" href="#overview">&#128202; Overview</a>
+    <a href="#trends">&#128200; Accident Trends</a>
+    <a href="#locations">&#128205; Location Analysis</a>
+    <a href="#severity">&#9889; Severity Analysis</a>
+    <a href="#records">&#128203; Accident Records</a>
   </nav>
 </aside>
 
@@ -120,52 +130,114 @@ h1{font-size:23px}
   </div>
 </header>
 
-<section class="panel filters" id="overview">
-  <div>
-    <label for="yearInput">SELECT YEAR</label>
-    <input id="yearInput" type="number" min="1900" max="2100" placeholder="Enter year (e.g. 2023)">
-  </div>
-  <button id="searchButton">View Data</button>
-</section>
 
-<div id="statusMessage" class="status">
-  Enter a year and click View Data.
-</div>
+<section class="section page-section active" id="overview">
 
-<section class="section">
   <div class="section-head">
-    <h2>Overview</h2>
-    <p>Summary of road accidents for the selected year.</p>
+    <h2>Road Accident Overview</h2>
+    <p>Explore accident records, casualties and key road-safety indicators for your selected year.</p>
+  </div>
+
+  <div class="panel filters">
+    <div>
+      <label for="yearInput">SELECT YEAR</label>
+      <input id="yearInput" type="number" min="2011" max="2026"
+             placeholder="Enter year (2011–2026)">
+    </div>
+    <button id="searchButton">View Data</button>
+  </div>
+
+  <div id="statusMessage" class="status">
+    Select a year and click View Data to explore the available records.
+  </div>
+
+  <div class="section-head">
+    <h2>Key Statistics</h2>
+    <p>A quick summary of accident records for the selected year.</p>
   </div>
 
   <div class="stats">
     <article class="stat">
       <div class="stat-label">RECORDED ACCIDENTS</div>
       <div class="stat-value" id="totalAccidents">—</div>
-      <div class="stat-note">Total recorded accidents</div>
+      <div class="stat-note">Total accident records for the selected year</div>
     </article>
 
     <article class="stat red">
       <div class="stat-label">FATALITIES</div>
       <div class="stat-value" id="totalDeaths">—</div>
-      <div class="stat-note">Recorded deaths, if available</div>
+      <div class="stat-note">Total deaths recorded in the available data</div>
     </article>
 
     <article class="stat blue">
       <div class="stat-label">INJURIES</div>
       <div class="stat-value" id="totalInjuries">—</div>
-      <div class="stat-note">Recorded injuries, if available</div>
+      <div class="stat-note">Total injuries recorded in the available data</div>
     </article>
 
     <article class="stat green">
-      <div class="stat-label">MISSING / INCOMPLETE</div>
+      <div class="stat-label">INCOMPLETE RECORDS</div>
       <div class="stat-value" id="missingCount">—</div>
-      <div class="stat-note">Records with missing information</div>
+      <div class="stat-note">Records with missing or incomplete information</div>
     </article>
   </div>
+
+  <div class="panel" style="margin-top:24px;padding:22px;">
+    <h3>Understanding the Dashboard</h3>
+    <p>
+      This dashboard helps explore road accident records through summary
+      statistics, trend charts, location comparisons, severity distribution
+      and detailed accident records.
+    </p>
+
+    <div class="stats" style="margin-top:18px;">
+      <article class="stat">
+        <div class="stat-label">ACCIDENT TRENDS</div>
+        <div class="stat-note">
+          Compare accident patterns and changes across the available years.
+        </div>
+      </article>
+
+      <article class="stat">
+        <div class="stat-label">LOCATION ANALYSIS</div>
+        <div class="stat-note">
+          Identify locations with higher recorded accident counts.
+        </div>
+      </article>
+
+      <article class="stat">
+        <div class="stat-label">SEVERITY ANALYSIS</div>
+        <div class="stat-note">
+          Examine the recorded distribution of accident severity.
+        </div>
+      </article>
+
+      <article class="stat">
+        <div class="stat-label">DETAILED RECORDS</div>
+        <div class="stat-note">
+          Search available records by location, vehicle and other fields.
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:24px;padding:22px;">
+    <h3>Road Safety: Key Areas to Examine</h3>
+    <p>
+      Use the available charts and records to investigate when accidents occur,
+      which locations have more recorded incidents, which vehicle categories
+      appear most frequently, and how accident severity varies.
+    </p>
+    <p>
+      These observations describe the data available in the system and should
+      not be treated as official national statistics unless verified against
+      an authoritative source.
+    </p>
+  </div>
+
 </section>
 
-<section class="section" id="trends">
+<section class="section page-section" id="trends">
   <div class="section-head">
     <h2>Accident Trends</h2>
     <p>Accident counts across months and time of day.</p>
@@ -184,7 +256,7 @@ h1{font-size:23px}
   </div>
 </section>
 
-<section class="section" id="locations">
+<section class="section page-section" id="locations">
   <div class="section-head">
     <h2>Location Analysis</h2>
     <p>Compare accident counts by location and vehicle type.</p>
@@ -201,14 +273,77 @@ h1{font-size:23px}
       <div class="chart-box"><canvas id="vehicleChart"></canvas></div>
     </article>
 
-    <article class="chart-card" id="severity">
-      <h3>Severity Distribution</h3>
-      <div class="chart-box"><canvas id="severityChart"></canvas></div>
-    </article>
+    
   </div>
 </section>
 
-<section class="section" id="records">
+<section class="section page-section" id="severity">
+  <div class="section-head">
+    <h2>Severity Analysis</h2>
+    <p>Explore the distribution of accident severity in the selected year.</p>
+  </div>
+
+  <div class="panel" style="padding:20px;margin-bottom:20px;">
+    <h3>Understanding Accident Severity</h3>
+    <p>
+      Severity analysis helps compare the recorded accident categories
+      and understand how outcomes are distributed across the available data.
+    </p>
+  </div>
+
+  <div class="charts">
+    <article class="chart-card wide">
+      <h3>Severity Distribution</h3>
+      <div class="chart-box">
+        <canvas id="severityChart"></canvas>
+      </div>
+    </article>
+  </div>
+
+
+  <div class="section-head" style="margin-top:28px;">
+    <h2>Severity Statistics</h2>
+    <p>Counts and percentage distribution from the selected year's records.</p>
+  </div>
+
+  <div class="stats">
+    <article class="stat">
+      <div class="stat-label">CATEGORIZED ACCIDENTS</div>
+      <div class="stat-value" id="severityTotal">—</div>
+    </article>
+
+    <article class="stat blue">
+      <div class="stat-label">SEVERITY CATEGORIES</div>
+      <div class="stat-value" id="severityCategoryCount">—</div>
+    </article>
+
+    <article class="stat red">
+      <div class="stat-label">HIGHEST COUNT CATEGORY</div>
+      <div class="stat-value" id="topSeverityCategory">—</div>
+    </article>
+  </div>
+
+  <div class="panel table-panel" style="margin-top:22px;">
+    <h3>Severity-wise Accident Details</h3>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Severity Category</th>
+            <th>Accident Count</th>
+            <th>Percentage</th>
+          </tr>
+        </thead>
+        <tbody id="severityTableBody">
+          <tr>
+            <td colspan="3">Select a year to load data.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+<section class="section page-section" id="records">
   <div class="section-head">
     <h2>Accident Records</h2>
     <p>Detailed accident records for the selected year.</p>
@@ -429,6 +564,57 @@ function updateDashboard(data) {
   const locations = chartData.locations || [];
   const vehicles = chartData.vehicle_types || [];
   const severities = chartData.severity || [];
+  const severityTotal = severities.reduce(
+    (sum, item) => sum + Number(item.count || 0),
+    0
+  );
+
+  const topSeverity = [...severities].sort(
+    (a, b) => Number(b.count || 0) - Number(a.count || 0)
+  )[0];
+
+  $("severityTotal").textContent =
+    severityTotal.toLocaleString("en-IN");
+
+  $("severityCategoryCount").textContent = severities.length;
+
+  $("topSeverityCategory").textContent =
+    topSeverity ? topSeverity.severity : "—";
+
+  const severityBody = $("severityTableBody");
+  severityBody.innerHTML = "";
+
+  if (severities.length === 0) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+
+    cell.colSpan = 3;
+    cell.textContent = "No severity data available for this year.";
+
+    row.appendChild(cell);
+    severityBody.appendChild(row);
+  } else {
+    severities.forEach(item => {
+      const count = Number(item.count || 0);
+      const percentage = severityTotal > 0
+        ? ((count / severityTotal) * 100).toFixed(1)
+        : "0.0";
+
+      const row = document.createElement("tr");
+
+      [
+        item.severity || "Unknown",
+        count.toLocaleString("en-IN"),
+        percentage + "%"
+      ].forEach(value => {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+        row.appendChild(cell);
+      });
+
+      severityBody.appendChild(row);
+    });
+  }
 
   createChart(
     "monthlyChart",
@@ -542,6 +728,41 @@ function showError(message) {
   status.textContent = message;
 }
 
+// Sidebar section navigation
+function showSection(sectionId) {
+  const target = document.getElementById(sectionId);
+
+  if (!target || !target.classList.contains("page-section")) {
+    sectionId = "overview";
+  }
+
+  document.querySelectorAll(".page-section").forEach(section => {
+    section.classList.toggle("active", section.id === sectionId);
+  });
+
+  document.querySelectorAll(".nav a").forEach(link => {
+    link.classList.toggle(
+      "active",
+      link.getAttribute("href") === "#" + sectionId
+    );
+  });
+
+  if (window.location.hash !== "#" + sectionId) {
+    history.replaceState(null, "", "#" + sectionId);
+  }
+
+  window.scrollTo(0, 0);
+}
+
+document.querySelectorAll(".nav a").forEach(link => {
+  link.addEventListener("click", function (event) {
+    event.preventDefault();
+    showSection(this.getAttribute("href").substring(1));
+  });
+});
+
+// Open the section selected in the URL, or Overview by default
+showSection(window.location.hash.substring(1) || "overview");
 $("searchButton").addEventListener("click", searchYear);
 
 $("yearInput").addEventListener("keydown", event => {
@@ -554,3 +775,15 @@ $("tableVehicle").addEventListener("change", () => renderRecords(allRecords));
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
