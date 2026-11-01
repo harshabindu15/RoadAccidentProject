@@ -7,46 +7,235 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-:root{
-  --bg:#f4f6fb;
-  --panel:#fff;
-  --ink:#20283a;
-  --muted:#6d778b;
-  --line:#e4e9f2;
-  --accent:#4f46e5;
-  
-  --accent:#4f46e5;
-  --red:#d98a20;
-  --blue:#3b82f6;
-  --green:#159a72;
-  --amber:#d98a20;
-
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+:root {
+  --bg: #F5F0E8;
+  --panel: #FFFCF6;
+  --card: #E7DCCB;
+  --text: #263A36;
+  --muted: #718078;
+  --accent: #C66B52;
+  --accent2: #D9A441;
+  --border: #D8CDBD;
+  --line: #D8CDBD;
+  --ink: #263A36;
+  --red: #C65D52;
+  --blue: #72958B;
+  --green: #568575;
+  --hover: #EDE3D5;
+  --sage: #72958B;
+  --danger: #C65D52;
+  --success: #568575;
+}
+body[data-theme="dark"] {
+  --bg: #171D1B;
+  --panel: #222C28;
+  --card: #2D3933;
+  --text: #D9D0BE;
+  --muted: #A9B4AA;
+  --accent: #E18A6E;
+  --accent2: #E4B95F;
+  --border: #3B4941;
+  --hover: #303D36;
+  --sage: #83A99A;
+  --danger: #E18A6E;
+  --success: #83A99A;
+  --line: #3B4941;
+  --ink: #D9D0BE;
+  --red: #E18A6E;
+  --blue: #83A99A;
+  --green: #83A99A;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 Arial,Helvetica,sans-serif}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.5 'DM Sans', sans-serif;
+}
 .layout{display:flex;min-height:100vh}
-.sidebar{width:235px;flex-shrink:0;background:#20243b;color:#fff;padding:26px 16px}
-.brand{font-size:18px;font-weight:700;line-height:1.4;margin:0 8px 30px}
-.brand span{display:block;color:#b9baff;font-size:13px;font-weight:500}
-.nav a{display:block;color:#d6d9e8;text-decoration:none;padding:12px 13px;border-radius:9px;margin:5px 0}
-.nav a:hover,.nav a.active{background:#4945a8;color:#fff}
+.sidebar {
+  width: 235px;
+  flex-shrink: 0;
+  background: var(--text);
+  color: var(--bg);
+  padding: 26px 16px;
+}
+
+.brand {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 0 8px 30px;
+}
+
+.brand span {
+  display: block;
+  color: var(--accent2);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.nav a {
+  display: block;
+  color: #D9D0BE;
+  text-decoration: none;
+  padding: 12px 13px;
+  border-radius: 9px;
+  margin: 5px 0;
+  transition: 0.2s;
+}
+
+.nav a:hover,
+.nav a.active {
+  background: var(--accent);
+  color: #fff;
+}
 .main{min-width:0;flex:1;padding:28px}
-.top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;flex-wrap:wrap;margin-bottom:22px}
-h1{font-size:27px;margin:0 0 5px}
-h2{font-size:19px;margin:0 0 5px}
-h3{font-size:15px;margin:0 0 15px}
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+
+h1 {
+  font-size: 27px;
+  margin: 0 0 5px;
+}
+
+h2 {
+  font-size: 19px;
+  margin: 0 0 5px;
+}
+
+h3 {
+  font-size: 15px;
+  margin: 0 0 15px;
+}
 p{color:var(--muted);margin:0;font-size:13px}
 .eyebrow{font-size:11px;font-weight:700;letter-spacing:1.2px;color:var(--accent);margin-bottom:7px}
-.panel,.stat,.chart-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 16px rgba(26,38,70,.025)}
+.panel,
+.stat,
+.chart-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(38, 58, 54, 0.06);
+}
+.stat-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.stat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.stat-icon svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.stat-icon.coral {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+}
+
+.stat-icon.gold {
+  color: var(--gold);
+  background: color-mix(in srgb, var(--gold) 15%, transparent);
+}
+
+.stat-icon.sage {
+  color: var(--sage);
+  background: color-mix(in srgb, var(--sage) 15%, transparent);
+}
+
+.stat-icon.lavender {
+  color: #A88AD8;
+  background: rgba(168, 138, 216, 0.15);
+}
 .filters{display:flex;gap:12px;align-items:end;padding:18px;margin-bottom:16px;max-width:620px}
 .filters>div{flex:1}
-label{display:block;font-size:11px;font-weight:700;letter-spacing:.4px;color:#606b80;margin-bottom:7px}
-input{width:100%;padding:12px;border:1px solid #d9dfeb;border-radius:8px;background:#fff;color:var(--ink);font:inherit}
-button{border:0;border-radius:8px;padding:12px 16px;font-weight:700;cursor:pointer;background:var(--accent);color:white;white-space:nowrap}
-button:disabled{opacity:.6;cursor:wait}
-.status{padding:12px 15px;border-radius:9px;background:#eeefff;color:#4540a0;margin-bottom:20px}
-.status.error{background:#fff0f1;color:#a82e3a}
-.status.success{background:#e9f8f1;color:#16724e}
+label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  color: var(--text);
+  margin-bottom: 7px;
+}
+input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+  outline: none;
+}
+button {
+  border: 0;
+  border-radius: 8px;
+  padding: 12px 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--accent);
+  color: #fff;
+  white-space: nowrap;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #AD5943;
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: .6;
+  cursor: wait;
+  transform: none;
+}
+
+.status {
+  padding: 12px 15px;
+  border-radius: 9px;
+  background: var(--hover);
+  color: var(--text);
+  margin-bottom: 20px;
+  border-left: 4px solid var(--accent2);
+}
+
+.status.error {
+  background: var(--card);
+  color: var(--danger);
+  border-left-color: var(--danger);
+}
+
+.status.success {
+  background: var(--card);
+  color: var(--success);
+  border-left-color: var(--success);
+}
 .section{margin:26px 0;scroll-margin-top:18px}
 .page-section {
   display: none;
@@ -57,7 +246,16 @@ button:disabled{opacity:.6;cursor:wait}
 }
 .section-head{margin-bottom:15px}
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.stat{padding:19px;border-top:3px solid var(--accent)}
+.stat {
+  padding: 20px;
+  border-top: 3px solid var(--accent);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 9px 24px rgba(38, 58, 54, 0.10);
+}
 .stat.red{border-top-color:var(--red)}
 .stat.blue{border-top-color:var(--blue)}
 .stat.green{border-top-color:var(--green)}
@@ -65,26 +263,89 @@ button:disabled{opacity:.6;cursor:wait}
 .stat-value{font-size:27px;font-weight:700;margin:9px 0 4px;overflow-wrap:anywhere}
 .stat-note{font-size:11px;color:var(--muted)}
 .charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
-.chart-card{padding:20px;min-width:0}
+.chart-card {
+  padding: 22px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.chart-card h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--text);
+  margin-bottom: 18px;
+}
+
+.chart-box {
+  height: 280px;
+  position: relative;
+}
 .chart-card.wide{grid-column:1/-1}
-.chart-box{height:280px;position:relative}
+
 .table-panel{padding:20px}
 .table-controls{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;margin:18px 0}
-select{width:100%;padding:11px 12px;border:1px solid #d9dfeb;border-radius:8px;background:#fff;color:var(--ink);font:inherit}
+select {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+}
 .table-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;min-width:760px;font-size:12px}
-th,td{padding:12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
-th{background:#f7f8fc;color:#687287;font-size:11px;letter-spacing:.3px}
-tbody tr:hover{background:#fafaff}
-.pill{display:inline-block;padding:4px 8px;border-radius:20px;background:#efedff;color:#5148b8;font-size:11px}
+th, td {
+  padding: 13px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+th {
+  background: var(--card);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  letter-spacing: .5px;
+}
+
+td {
+  color: var(--text);
+}
+
+tbody tr:hover {
+  background: var(--hover);
+}
+
+.pill {
+  display: inline-block;
+  padding: 4px 9px;
+  border-radius: 20px;
+  background: var(--hover);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 600;
+}
 .empty{text-align:center;color:var(--muted);padding:30px}
 @media(max-width:1050px){
 .sidebar{width:200px}
 .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:720px){
+  .sidebar.collapsed {
+  width: 100% !important;
+}
 .layout{display:block}
 .sidebar{width:100%;padding:15px}
+.top {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+#themeToggle {
+  width: 100%;
+}
+
 .brand{margin-bottom:12px}
 .nav{display:flex;overflow-x:auto;gap:5px}
 .nav a{white-space:nowrap;padding:10px}
@@ -99,25 +360,192 @@ h1{font-size:23px}
 .stat-value{font-size:22px}
 .table-controls{grid-template-columns:1fr}
 }
+/* Dark mode sidebar fix */
+body[data-theme="dark"] .sidebar {
+  background: #222C28 !important;
+  color: #D9D0BE;
+}
+
+body[data-theme="dark"] .sidebar .brand {
+  color: #D9D0BE;
+}
+
+body[data-theme="dark"] .sidebar .nav a {
+  color: #D9D0BE;
+}
+
+body[data-theme="dark"] .sidebar .nav a.active {
+  background: #E18A6E;
+  color: #171D1B;
+}
+/* Collapsible Sidebar */
+
+.sidebar {
+  position: relative;
+  transition: width 0.3s ease;
+}
+
+.sidebar-toggle {
+  display: block;
+  margin-left: auto;
+  margin-bottom: 20px;
+  background: transparent;
+  color: var(--bg);
+  border: 1px solid rgba(255,255,255,0.25);
+  padding: 8px 12px;
+  font-size: 20px;
+}
+
+.sidebar.collapsed {
+  width: 85px !important;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.sidebar.collapsed .brand span,
+.sidebar.collapsed .nav-text {
+  display: none;
+}
+
+.sidebar.collapsed .brand {
+  font-size: 0;
+  text-align: center;
+}
+
+.sidebar.collapsed .nav a {
+  text-align: center;
+  padding: 13px 5px;
+}
+
+.sidebar.collapsed .nav-icon {
+  font-size: 20px;
+}
+/* Sidebar toggle button visibility */
+
+.sidebar-toggle {
+  background: #C66B52;
+  color: #FFFFFF;
+  border: 1px solid #C66B52;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+body[data-theme="dark"] .sidebar-toggle {
+  background: #E18A6E;
+  color: #171D1B;
+  border-color: #E18A6E;
+}
+/* Professional Sidebar Icons */
+
+.nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.nav-icon svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nav a {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.sidebar.collapsed .nav a {
+  justify-content: center;
+  gap: 0;
+}
+/* Trends page - stacked chart layout */
+#trends .charts {
+  grid-template-columns: minmax(0, 1fr);
+}
+/* Time of Day chart - balanced width */
+#trends .charts .chart-card:nth-child(2) {
+  width: 80%;
+  justify-self: center;
+}
+
+/* Mobile screen adjustment */
+@media (max-width: 720px) {
+  #trends .charts .chart-card:nth-child(2) {
+    width: 100%;
+  }
+}
+/* Trends page spacing */
+#trends .charts {
+  row-gap: 28px;
+}
+
+#trends .chart-card h3 {
+  margin-bottom: 20px;
+}
 </style>
 </head>
 
 <body>
 <div class="layout">
 
-<aside class="sidebar">
+<aside class="sidebar" id="sidebar">
+
+  <button id="sidebarToggle" class="sidebar-toggle" type="button">
+    ☰
+  </button>
+
   <div class="brand">
     &#128658; Road Accident
     <span>Data Analysis System</span>
   </div>
 
   <nav class="nav">
-    <a class="active" href="#overview">&#128202; Overview</a>
-    <a href="#trends">&#128200; Accident Trends</a>
-    <a href="#locations">&#128205; Location Analysis</a>
-    <a href="#severity">&#9889; Severity Analysis</a>
-    <a href="#records">&#128203; Accident Records</a>
-  </nav>
+
+  <a class="active" href="#overview">
+    <span class="nav-icon">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+    </span>
+    <span class="nav-text">Overview</span>
+  </a>
+
+  <a href="#trends">
+    <span class="nav-icon">
+      <svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="15 6 21 6 21 12"/></svg>
+    </span>
+    <span class="nav-text">Accident Trends</span>
+  </a>
+
+  <a href="#locations">
+    <span class="nav-icon">
+      <svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+    </span>
+    <span class="nav-text">Location Analysis</span>
+  </a>
+
+  <a href="#severity">
+    <span class="nav-icon">
+      <svg viewBox="0 0 24 24"><path d="m13 2-3 9h7l-6 11 2-9H6l7-11Z"/></svg>
+    </span>
+    <span class="nav-text">Severity Analysis</span>
+  </a>
+
+  <a href="#records">
+    <span class="nav-icon">
+      <svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3v4h6V3M9 12h6M9 16h6"/></svg>
+    </span>
+    <span class="nav-text">Accident Records</span>
+  </a>
+
+</nav>
+
 </aside>
 
 <main class="main">
@@ -128,6 +556,10 @@ h1{font-size:23px}
     <h1>Road Accident Dashboard</h1>
     <p>Enter a year to explore road accident data.</p>
   </div>
+
+  <button id="themeToggle" type="button">
+    🌙 Dark Mode
+  </button>
 </header>
 
 
@@ -157,30 +589,52 @@ h1{font-size:23px}
   </div>
 
   <div class="stats">
-    <article class="stat">
+
+  <article class="stat">
+    <div class="stat-top">
       <div class="stat-label">RECORDED ACCIDENTS</div>
-      <div class="stat-value" id="totalAccidents">—</div>
-      <div class="stat-note">Total accident records for the selected year</div>
-    </article>
+      <span class="stat-icon coral">
+        <svg viewBox="0 0 24 24"><path d="M5 17h14l-1.5-6h-11L5 17Z"/><path d="m7 11 2-4h6l2 4M7 17v2m10-2v2"/><circle cx="8" cy="17" r="1"/><circle cx="16" cy="17" r="1"/></svg>
+      </span>
+    </div>
+    <div class="stat-value" id="totalAccidents">—</div>
+    <div class="stat-note">Total accident records for the selected year</div>
+  </article>
 
-    <article class="stat red">
+  <article class="stat red">
+    <div class="stat-top">
       <div class="stat-label">FATALITIES</div>
-      <div class="stat-value" id="totalDeaths">—</div>
-      <div class="stat-note">Total deaths recorded in the available data</div>
-    </article>
+      <span class="stat-icon gold">
+        <svg viewBox="0 0 24 24"><path d="M20.8 8.8c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11A4.8 4.8 0 0 1 12 6a4.8 4.8 0 0 1 8.8 2.8Z"/><path d="M5 12h4l2-3 2.5 6 2-3H19"/></svg>
+      </span>
+    </div>
+    <div class="stat-value" id="totalDeaths">—</div>
+    <div class="stat-note">Total deaths recorded in the available data</div>
+  </article>
 
-    <article class="stat blue">
+  <article class="stat blue">
+    <div class="stat-top">
       <div class="stat-label">INJURIES</div>
-      <div class="stat-value" id="totalInjuries">—</div>
-      <div class="stat-note">Total injuries recorded in the available data</div>
-    </article>
+      <span class="stat-icon sage">
+        <svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>
+      </span>
+    </div>
+    <div class="stat-value" id="totalInjuries">—</div>
+    <div class="stat-note">Total injuries recorded in the available data</div>
+  </article>
 
-    <article class="stat green">
+  <article class="stat green">
+    <div class="stat-top">
       <div class="stat-label">INCOMPLETE RECORDS</div>
-      <div class="stat-value" id="missingCount">—</div>
-      <div class="stat-note">Records with missing or incomplete information</div>
-    </article>
-  </div>
+      <span class="stat-icon lavender">
+        <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>
+      </span>
+    </div>
+    <div class="stat-value" id="missingCount">—</div>
+    <div class="stat-note">Records with missing or incomplete information</div>
+  </article>
+
+</div>
 
   <div class="panel" style="margin-top:24px;padding:22px;">
     <h3>Understanding the Dashboard</h3>
@@ -245,12 +699,12 @@ h1{font-size:23px}
 
   <div class="charts">
     <article class="chart-card">
-      <h3>Month-wise Accident Trend</h3>
+      <h3>Monthly Accident Trends</h3>
       <div class="chart-box"><canvas id="monthlyChart"></canvas></div>
     </article>
 
     <article class="chart-card">
-      <h3>Accidents by Time of Day</h3>
+      <h3>Accident Distribution by Time of Day</h3>
       <div class="chart-box"><canvas id="timeChart"></canvas></div>
     </article>
   </div>
@@ -422,9 +876,75 @@ function createChart(id, type, labels, datasets) {
 
   if (charts[id]) charts[id].destroy();
 
+  const styles = getComputedStyle(document.body);
+  const textColor = styles.getPropertyValue("--text").trim();
+  const borderColor = styles.getPropertyValue("--border").trim();
+
+  Chart.defaults.color = textColor;
+
   charts[id] = new Chart(canvas, {
     type,
     data: { labels, datasets },
+  plugins: [{
+  id: "piePercentageLabels",
+  afterDatasetsDraw(chart) {
+    if (chart.config.type !== "pie") return;
+
+    const ctx = chart.ctx;
+    const meta = chart.getDatasetMeta(0);
+    const values = chart.data.datasets[0].data;
+
+    const total = values.reduce(
+      (sum, value) => sum + Number(value || 0), 0
+    );
+
+    if (!total) return;
+
+    ctx.save();
+    ctx.font = "bold 13px sans-serif";
+    ctx.fillStyle = getComputedStyle(document.body)
+      .getPropertyValue("--text").trim();
+    ctx.strokeStyle = ctx.fillStyle;
+    ctx.lineWidth = 1.2;
+
+  meta.data.forEach((arc, index) => {
+  const percentage = (Number(values[index]) / total) * 100;
+  const angle = (arc.startAngle + arc.endAngle) / 2;
+
+  const isBottomSlice = Math.sin(angle) > 0.7;
+
+  const startX = arc.x + Math.cos(angle) * arc.outerRadius;
+  const startY = arc.y + Math.sin(angle) * arc.outerRadius;
+
+  let endX, endY;
+
+ if (isBottomSlice) {
+  endX = arc.x + arc.outerRadius + 45;
+  endY = startY;
+
+  } else {
+    endX = arc.x + Math.cos(angle) * (arc.outerRadius + 22);
+    endY = arc.y + Math.sin(angle) * (arc.outerRadius + 22);
+  }
+
+  ctx.beginPath();
+  ctx.moveTo(startX, startY);
+  ctx.lineTo(endX, endY);
+  ctx.stroke();
+
+  ctx.textAlign = isBottomSlice ? "left" : (Math.cos(angle) >= 0 ? "left" : "right");
+  ctx.textBaseline = "middle";
+
+  ctx.fillText(
+    percentage.toFixed(1) + "%",
+    endX + (isBottomSlice || Math.cos(angle) >= 0 ? 5 : -5),
+    endY
+  );
+});
+
+    ctx.restore();
+  }
+}],
     options: {
       responsive: true,
       maintainAspectRatio: false,
@@ -432,17 +952,73 @@ function createChart(id, type, labels, datasets) {
       plugins: {
         legend: {
           display: type === "pie" || datasets.length > 1,
-          position: "bottom"
+          position: "bottom",
+          labels: {
+            color: textColor
+          }
         }
       },
       scales: ["bar", "line"].includes(type)
-        ? {
-            y: {
-              beginAtZero: true,
-              ticks: { precision: 0 }
-            }
-          }
-        : {}
+  ? {
+      x: {
+        title: {
+  display: ["locationChart", "vehicleChart", "monthlyChart", "timeChart"].includes(id),
+text: id === "locationChart" ? "Location" :
+      id === "vehicleChart" ? "Vehicle Type" :
+      id === "monthlyChart" ? "Month" :
+      id === "timeChart" ? "Time of Day" : "",
+  color: textColor,
+  font: { weight: "bold" }
+},
+        ticks: {
+  color: textColor,
+  autoSkip: false,
+  maxRotation: 0,
+  minRotation: 0,
+  font: { size: 11 },
+  callback: function(value) {
+    const label = this.getLabelForValue(value);
+    const maxLength = 12;
+
+    if (label.length > maxLength) {
+      const words = label.split(" ");
+      const lines = [];
+      let currentLine = "";
+
+      words.forEach(word => {
+        if ((currentLine + " " + word).trim().length > maxLength) {
+          if (currentLine) lines.push(currentLine);
+          currentLine = word;
+        } else {
+          currentLine = (currentLine + " " + word).trim();
+        }
+      });
+
+      if (currentLine) lines.push(currentLine);
+      return lines;
+    }
+
+    return label;
+  }
+},
+        grid: { color: borderColor }
+      },
+      y: {
+        beginAtZero: true,
+        title: {
+  display: ["locationChart", "vehicleChart", "monthlyChart", "timeChart"].includes(id),
+  text: "Number of Accidents",
+  color: textColor,
+  font: { weight: "bold" }
+},
+        ticks: {
+          precision: 0,
+          color: textColor
+        },
+        grid: { color: borderColor }
+      }
+    }
+  : {}
     }
   });
 }
@@ -550,6 +1126,7 @@ function renderRecords(records) {
 }
 
 function updateDashboard(data) {
+  lastDashboardData = data;
   const summary = data.summary || {};
 
   setText("totalAccidents", summary.total_accidents);
@@ -558,6 +1135,15 @@ function updateDashboard(data) {
   setText("missingCount", summary.missing_records);
 
   const chartData = data.charts || {};
+  const palette = getComputedStyle(document.body);
+
+const chartColors = {
+  accent: palette.getPropertyValue("--accent").trim(),
+  accent2: palette.getPropertyValue("--accent2").trim(),
+  sage: palette.getPropertyValue("--sage").trim(),
+  danger: palette.getPropertyValue("--danger").trim(),
+  blue: palette.getPropertyValue("--blue").trim()
+};
 
   const monthly = chartData.monthly || [];
   const times = chartData.time_of_day || [];
@@ -623,7 +1209,7 @@ function updateDashboard(data) {
     [makeDataset(
       "Accidents",
       monthly.map(item => Number(item.count || 0)),
-      "#4f46e5"
+      chartColors.accent
     )]
   );
 
@@ -634,7 +1220,7 @@ function updateDashboard(data) {
     [makeDataset(
       "Accidents",
       times.map(item => Number(item.count || 0)),
-      "#d98a20"
+      chartColors.accent2
     )]
   );
 
@@ -645,7 +1231,7 @@ function updateDashboard(data) {
     [makeDataset(
       "Accidents",
       locations.map(item => Number(item.count || 0)),
-      "#4f46e5"
+      chartColors.sage
     )]
   );
 
@@ -656,7 +1242,7 @@ function updateDashboard(data) {
     [makeDataset(
       "Accidents",
       vehicles.map(item => Number(item.count || 0)),
-      "#159a72"
+      chartColors.accent
     )]
   );
 
@@ -667,7 +1253,13 @@ function updateDashboard(data) {
     [makeDataset(
       "Accidents",
       severities.map(item => Number(item.count || 0)),
-      ["#e45867", "#d98a20", "#159a72", "#4f46e5", "#3b82f6"]
+      [
+  chartColors.danger,
+  chartColors.accent2,
+  chartColors.sage,
+  chartColors.accent,
+  chartColors.blue
+]
     )]
   );
 
@@ -772,18 +1364,41 @@ $("yearInput").addEventListener("keydown", event => {
 $("recordSearch").addEventListener("input", () => renderRecords(allRecords));
 $("tableSeverity").addEventListener("change", () => renderRecords(allRecords));
 $("tableVehicle").addEventListener("change", () => renderRecords(allRecords));
+let lastDashboardData = null;
+const themeToggle = document.getElementById("themeToggle");
+
+function setTheme(theme) {
+  document.body.setAttribute("data-theme", theme);
+
+  themeToggle.textContent =
+    theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
+
+  localStorage.setItem("dashboardTheme", theme);
+}
+
+const savedTheme = localStorage.getItem("dashboardTheme") || "light";
+setTheme(savedTheme);
+
+themeToggle.addEventListener("click", () => {
+  const currentTheme = document.body.getAttribute("data-theme");
+
+  setTheme(currentTheme === "dark" ? "light" : "dark");
+
+  if (lastDashboardData) {
+    updateDashboard(lastDashboardData);
+  }
+});
+const sidebar = document.getElementById("sidebar");
+const sidebarToggle = document.getElementById("sidebarToggle");
+
+if (sidebar && sidebarToggle) {
+  sidebarToggle.addEventListener("click", () => {
+    sidebar.classList.toggle("collapsed");
+
+    sidebarToggle.textContent =
+      sidebar.classList.contains("collapsed") ? "»" : "☰";
+  });
+}
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-

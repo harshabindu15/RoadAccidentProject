@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -14,10 +14,13 @@
   --muted:#6d778b;
   --line:#e4e9f2;
   --accent:#4f46e5;
-  --red:#e45867;
+  
+  --accent:#4f46e5;
+  --red:#d98a20;
   --blue:#3b82f6;
   --green:#159a72;
   --amber:#d98a20;
+
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 Arial,Helvetica,sans-serif}
@@ -104,16 +107,16 @@ h1{font-size:23px}
 
 <aside class="sidebar">
   <div class="brand">
-    🚦 Road Accident
+    &#128658; Road Accident
     <span>Data Analysis System</span>
   </div>
 
   <nav class="nav">
-    <a class="active" href="#overview">📊 Overview</a>
-    <a href="#trends">📈 Accident Trends</a>
-    <a href="#locations">📍 Location Analysis</a>
-    <a href="#severity">⚠️ Severity Analysis</a>
-    <a href="#records">📋 Accident Records</a>
+    <a class="active" href="#overview">&#128202; Overview</a>
+    <a href="#trends">&#128200; Accident Trends</a>
+    <a href="#locations">&#128205; Location Analysis</a>
+    <a href="#severity">&#9889; Severity Analysis</a>
+    <a href="#records">&#128203; Accident Records</a>
   </nav>
 </aside>
 
@@ -127,7 +130,7 @@ h1{font-size:23px}
   </div>
 </header>
 
-```html
+
 <section class="section page-section active" id="overview">
 
   <div class="section-head">
@@ -233,7 +236,7 @@ h1{font-size:23px}
   </div>
 
 </section>
-```
+
 <section class="section page-section" id="trends">
   <div class="section-head">
     <h2>Accident Trends</h2>
@@ -270,13 +273,76 @@ h1{font-size:23px}
       <div class="chart-box"><canvas id="vehicleChart"></canvas></div>
     </article>
 
-    <article class="chart-card" id="severity">
-      <h3>Severity Distribution</h3>
-      <div class="chart-box"><canvas id="severityChart"></canvas></div>
-    </article>
+    
   </div>
 </section>
 
+<section class="section page-section" id="severity">
+  <div class="section-head">
+    <h2>Severity Analysis</h2>
+    <p>Explore the distribution of accident severity in the selected year.</p>
+  </div>
+
+  <div class="panel" style="padding:20px;margin-bottom:20px;">
+    <h3>Understanding Accident Severity</h3>
+    <p>
+      Severity analysis helps compare the recorded accident categories
+      and understand how outcomes are distributed across the available data.
+    </p>
+  </div>
+
+  <div class="charts">
+    <article class="chart-card wide">
+      <h3>Severity Distribution</h3>
+      <div class="chart-box">
+        <canvas id="severityChart"></canvas>
+      </div>
+    </article>
+  </div>
+
+
+  <div class="section-head" style="margin-top:28px;">
+    <h2>Severity Statistics</h2>
+    <p>Counts and percentage distribution from the selected year's records.</p>
+  </div>
+
+  <div class="stats">
+    <article class="stat">
+      <div class="stat-label">CATEGORIZED ACCIDENTS</div>
+      <div class="stat-value" id="severityTotal">—</div>
+    </article>
+
+    <article class="stat blue">
+      <div class="stat-label">SEVERITY CATEGORIES</div>
+      <div class="stat-value" id="severityCategoryCount">—</div>
+    </article>
+
+    <article class="stat red">
+      <div class="stat-label">HIGHEST COUNT CATEGORY</div>
+      <div class="stat-value" id="topSeverityCategory">—</div>
+    </article>
+  </div>
+
+  <div class="panel table-panel" style="margin-top:22px;">
+    <h3>Severity-wise Accident Details</h3>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Severity Category</th>
+            <th>Accident Count</th>
+            <th>Percentage</th>
+          </tr>
+        </thead>
+        <tbody id="severityTableBody">
+          <tr>
+            <td colspan="3">Select a year to load data.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
 <section class="section page-section" id="records">
   <div class="section-head">
     <h2>Accident Records</h2>
@@ -498,6 +564,57 @@ function updateDashboard(data) {
   const locations = chartData.locations || [];
   const vehicles = chartData.vehicle_types || [];
   const severities = chartData.severity || [];
+  const severityTotal = severities.reduce(
+    (sum, item) => sum + Number(item.count || 0),
+    0
+  );
+
+  const topSeverity = [...severities].sort(
+    (a, b) => Number(b.count || 0) - Number(a.count || 0)
+  )[0];
+
+  $("severityTotal").textContent =
+    severityTotal.toLocaleString("en-IN");
+
+  $("severityCategoryCount").textContent = severities.length;
+
+  $("topSeverityCategory").textContent =
+    topSeverity ? topSeverity.severity : "—";
+
+  const severityBody = $("severityTableBody");
+  severityBody.innerHTML = "";
+
+  if (severities.length === 0) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+
+    cell.colSpan = 3;
+    cell.textContent = "No severity data available for this year.";
+
+    row.appendChild(cell);
+    severityBody.appendChild(row);
+  } else {
+    severities.forEach(item => {
+      const count = Number(item.count || 0);
+      const percentage = severityTotal > 0
+        ? ((count / severityTotal) * 100).toFixed(1)
+        : "0.0";
+
+      const row = document.createElement("tr");
+
+      [
+        item.severity || "Unknown",
+        count.toLocaleString("en-IN"),
+        percentage + "%"
+      ].forEach(value => {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+        row.appendChild(cell);
+      });
+
+      severityBody.appendChild(row);
+    });
+  }
 
   createChart(
     "monthlyChart",
@@ -658,3 +775,15 @@ $("tableVehicle").addEventListener("change", () => renderRecords(allRecords));
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
