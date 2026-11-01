@@ -1,7 +1,6 @@
-
 import pandas as pd
 import mysql.connector
-
+import os
 # Read the CSV file
 df = pd.read_csv("synthetic_accidents.csv")
 
@@ -21,7 +20,7 @@ try:
     conn = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="Hbindu@15",
+        password=os.environ["DB_PASSWORD"],
         database="road_accident_db"
     )
     cursor = conn.cursor()
@@ -71,9 +70,9 @@ try:
                 row["location"],
                 location_id,
                 row["vehicle_type"],
+                row["severity"],
                 int(row["deaths"]),
                 int(row["injuries"]),
-                row["severity"],
                 row["weather"]
             )
         )

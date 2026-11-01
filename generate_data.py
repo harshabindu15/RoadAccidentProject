@@ -40,14 +40,16 @@ records = []
 record_id = 1
 
 for year in range(2011, 2027):
+
     start_date = datetime(year, 1, 1)
     next_year = datetime(year + 1, 1, 1)
     days_in_year = (next_year - start_date).days
-records_per_year = random.randint(300, 700)
 
-for _ in range(records_per_year):
+    records_per_year = random.randint(300, 700)
 
-            state = random.choice(list(locations.keys()))
+    for _ in range(records_per_year):
+
+        state = random.choice(list(locations.keys()))
         district = random.choice(list(locations[state].keys()))
         location = random.choice(locations[state][district])
 
@@ -106,4 +108,3 @@ print("\nDifferent road locations:", df["location"].nunique())
 
 print("\nWeather distribution:")
 print(df["weather"].value_counts())
-
