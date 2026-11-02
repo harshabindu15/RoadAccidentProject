@@ -1,8 +1,15 @@
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 import mysql.connector
 
 app = Flask(__name__)
+@app.after_request
+def prevent_cache(response):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+app.secret_key = "road-safety-demo-key"
 
 def get_db_connection():
     return mysql.connector.connect(
@@ -15,11 +22,73 @@ def get_db_connection():
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("landing.html")
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        name = request.form.get("name")
+        email = request.form.get("email")
+        password = request.form.get("password")
+
+        if email == "demo@roadsafety.com" and password == "road123":
+            session["logged_in"] = True
+            session["user_name"] = name
+            session["user_email"] = email
+
+            return redirect(url_for("dashboard_page"))
+
+        return render_template(
+            "login.html",
+            error="Invalid email or password"
+        )
+
+    return render_template("login.html")
+
+
+@app.route("/update_profile", methods=["POST"])
+def update_profile():
+    if not session.get("logged_in"):
+        return redirect(url_for("login"))
+
+    name = request.form.get("name")
+    email = request.form.get("email")
+
+    session["user_name"] = name
+    session["user_email"] = email
+
+    return redirect(url_for("dashboard_page"))
+@app.route("/dashboard")
+def dashboard_page():
+    if not session.get("logged_in"):
+        return redirect(url_for("login"))
+
+    response = app.make_response(
+        render_template(
+            "index.html",
+            user_name=session.get("user_name"),
+            user_email=session.get("user_email")
+        )
+    )
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+
+    return response
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    response = redirect(url_for("home"))
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 
 @app.route("/api/dashboard")
 def dashboard():
+    if not session.get("logged_in"):
+        return jsonify({"error": "Unauthorized"}), 401
     conn = None
     cursor = None
 

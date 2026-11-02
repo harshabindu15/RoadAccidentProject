@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Road Safety Insights</title>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg: #F5F0E8;
+    --card: #FFFCF6;
+    --text: #263A36;
+    --muted: #718078;
+    --accent: #C66B52;
+    --border: #DDD2C2;
+    --sidebar: #263A36;
+}
+
+body.dark {
+    --bg: #171F1C;
+    --card: #212D28;
+    --text: #E8DCC9;
+    --muted: #A8B8B1;
+    --accent: #E58A6E;
+    --border: #394940;
+    --sidebar: #212D28;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    transition: .3s;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 7%;
+}
+
+.logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.logo span {
+    color: var(--accent);
+}
+
+button {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 13px 22px;
+    border-radius: 9px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.hero {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    align-items: center;
+    gap: 50px;
+    padding: 75px 7%;
+}
+
+.tag {
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(35px, 5vw, 58px);
+    line-height: 1.15;
+    margin-bottom: 22px;
+}
+
+h1 span {
+    color: var(--accent);
+}
+
+.hero p {
+    color: var(--muted);
+    font-size: 17px;
+    line-height: 1.8;
+    max-width: 520px;
+    margin-bottom: 30px;
+}
+
+.hero-image {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 30px;
+}
+
+.hero-image img {
+    width: 100%;
+    border-radius: 12px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    padding: 0 7% 65px;
+}
+
+.stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
+    border-radius: 12px;
+    padding: 25px;
+}
+
+.stat-card h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 25px;
+    margin-bottom: 8px;
+}
+
+.stat-card p {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.about {
+    margin: 0 7% 60px;
+    padding: 35px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+}
+
+.about h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    margin-bottom: 15px;
+}
+
+.about p {
+    color: var(--muted);
+    line-height: 1.8;
+}
+
+footer {
+    background: var(--sidebar);
+    color: #E8DCC9;
+    text-align: center;
+    padding: 25px;
+    font-size: 14px;
+}
+
+@media(max-width: 800px) {
+    .hero {
+        grid-template-columns: 1fr;
+        padding-top: 40px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    header {
+        padding: 20px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">ROAD <span>SAFETY</span> INSIGHTS</div>
+
+    <div>
+        <button onclick="toggleTheme()">🌙 / ☀️</button>
+        <a href="/login">
+            <button>Login →</button>
+        </a>
+    </div>
+</header>
+
+<section class="hero">
+
+    <div>
+        <div class="tag">ROAD ACCIDENT DATA ANALYSIS SYSTEM</div>
+
+        <h1>Making Roads<br>
+        <span>Safer Through Data.</span></h1>
+
+        <p>
+            Explore road accident patterns, understand accident severity,
+            analyze locations and discover meaningful insights through
+            interactive data visualization.
+        </p>
+
+        <a href="/login">
+            <button>Explore Dashboard →</button>
+        </a>
+    </div>
+
+    <div class="hero-image">
+        <img src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=900&q=80"
+             alt="Road safety">
+    </div>
+
+</section>
+
+<section class="stats">
+
+    <div class="stat-card">
+        <h2>2011 – 2026</h2>
+        <p>Accident Data Coverage</p>
+    </div>
+
+    <div class="stat-card">
+        <h2>Interactive</h2>
+        <p>Data Visualization</p>
+    </div>
+
+    <div class="stat-card">
+        <h2>Multiple</h2>
+        <p>Analysis Categories</p>
+    </div>
+
+</section>
+
+<section class="about">
+    <h2>About the Project</h2>
+
+    <p>
+        Road Accident Data Analysis System is designed to explore accident
+        records through yearly statistics, accident trends, location analysis,
+        severity distribution and detailed records. The dashboard helps users
+        understand accident patterns through organized data and visual insights.
+    </p>
+</section>
+
+<footer>
+    Road Safety Insights | Road Accident Data Analysis System
+    <br><br>
+    Contact: roadsafety@example.com | +91 98765 43210
+</footer>
+
+<script>
+function applyTheme() {
+    const theme = localStorage.getItem("roadTheme") || "light";
+    document.body.classList.toggle("dark", theme === "dark");
+}
+
+function toggleTheme() {
+    const isDark = document.body.classList.toggle("dark");
+    localStorage.setItem("roadTheme", isDark ? "dark" : "light");
+}
+
+applyTheme();
+</script>
+
+</body>
+</html>

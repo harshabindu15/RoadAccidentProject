@@ -542,6 +542,15 @@ body[data-theme="dark"] .sidebar-toggle {
       <svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3v4h6V3M9 12h6M9 16h6"/></svg>
     </span>
     <span class="nav-text">Accident Records</span>
+    <a href="#profile">
+  <span class="nav-icon">
+    <svg viewBox="0 0 24 24">
+      <circle cx="12" cy="8" r="4"/>
+      <path d="M4 21v-2a8 8 0 0 1 16 0v2"/>
+    </svg>
+  </span>
+  <span class="nav-text">Profile</span>
+</a>
   </a>
 
 </nav>
@@ -850,6 +859,56 @@ body[data-theme="dark"] .sidebar-toggle {
     <p id="recordCount" style="margin-top:14px">No records loaded.</p>
   </div>
 </section>
+<section class="section page-section" id="profile">
+
+  <div class="section-head">
+    <h2>My Profile</h2>
+    <p>Manage your personal information and account details.</p>
+  </div>
+
+  <div class="panel profile-card">
+
+    <h3>Personal Information</h3>
+
+    <p>
+      <strong>Name:</strong>
+      <span id="profileName">{{ user_name or "User" }}</span>
+    </p>
+
+    <p>
+      <strong>Email:</strong>
+      <span id="profileEmail">{{ user_email or "Email not available" }}</span>
+    </p>
+
+    <button type="button" onclick="showAccountSettings()">
+      Account Settings
+    </button>
+
+    <form id="accountSettingsForm"
+          action="/update_profile"
+          method="POST"
+          style="display: none;">
+
+      <h3>Edit Account Details</h3>
+
+      <label for="editName">Name</label>
+      <input type="text" id="editName" name="name" required>
+
+      <label for="editEmail">Email</label>
+      <input type="email" id="editEmail" name="email" required>
+
+      <button type="submit">Save Changes</button>
+
+      <button type="button" onclick="showAccountSettings()">
+        Cancel
+      </button>
+
+    </form>
+
+  </div>
+
+</section>
+
 
 </main>
 </div>
@@ -1373,10 +1432,10 @@ function setTheme(theme) {
   themeToggle.textContent =
     theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
 
-  localStorage.setItem("dashboardTheme", theme);
+  localStorage.setItem("roadTheme", theme);
 }
 
-const savedTheme = localStorage.getItem("dashboardTheme") || "light";
+const savedTheme = localStorage.getItem("roadTheme") || "light";
 setTheme(savedTheme);
 
 themeToggle.addEventListener("click", () => {
@@ -1399,6 +1458,182 @@ if (sidebar && sidebarToggle) {
       sidebar.classList.contains("collapsed") ? "»" : "☰";
   });
 }
+function showAccountSettings() {
+    const form = document.getElementById("accountSettingsForm");
+
+    if (form.style.display === "none") {
+        form.style.display = "block";
+
+        document.getElementById("editName").value =
+            document.getElementById("profileName").textContent.trim();
+
+        document.getElementById("editEmail").value =
+            document.getElementById("profileEmail").textContent.trim();
+
+    } else {
+        form.style.display = "none";
+    }
+}
+function saveAccountSettings() {
+    const newName = document.getElementById("editName").value.trim();
+    const newEmail = document.getElementById("editEmail").value.trim();
+
+    if (!newName || !newEmail) {
+        alert("Please enter both name and email.");
+        return;
+    }
+
+    document.getElementById("profileName").textContent = newName;
+    document.getElementById("profileEmail").textContent = newEmail;
+
+    document.getElementById("accountSettingsForm").style.display = "none";
+
+    alert("Profile updated successfully!");
+}
 </script>
+<a href="/logout" class="logout-btn">Logout ↗</a>
+
+<style>
+.logout-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 25px;
+    background: #C66B52;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    z-index: 9999;
+}
+css
+/* ===== PROFILE SECTION ===== */
+
+#profile .section-head {
+    margin-bottom: 28px;
+}
+
+#profile .section-head h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text);
+}
+
+#profile .section-head p {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+#profile .profile-card {
+    max-width: 680px;
+    padding: 30px;
+    margin-top: 20px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(38, 58, 54, 0.04);
+}
+
+#profile .profile-card h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 19px;
+    font-weight: 600;
+    margin: 0 0 24px;
+    color: var(--text);
+}
+
+#profile .profile-card p {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 20px;
+    font-size: 15px;
+    color: var(--text);
+}
+
+#profile .profile-card p strong {
+    min-width: 65px;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+#profile .profile-card button {
+    border: 1px solid var(--border);
+    background: var(--accent);
+    color: #FFFCF6;
+    padding: 11px 20px;
+    border-radius: 9px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#profile .profile-card button:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
+}
+
+#profile #accountSettingsForm {
+    margin-top: 28px;
+    padding-top: 26px;
+    border-top: 1px solid var(--border);
+}
+
+#profile #accountSettingsForm h3 {
+    margin-bottom: 20px;
+}
+
+#profile #accountSettingsForm label {
+    display: block;
+    margin: 18px 0 8px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#profile #accountSettingsForm input {
+    display: block;
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#profile #accountSettingsForm input:focus {
+    border-color: var(--sage);
+    box-shadow: 0 0 0 3px rgba(114, 149, 139, 0.15);
+}
+
+#profile #accountSettingsForm button {
+    margin-top: 22px;
+    margin-right: 10px;
+}
+
+#profile #accountSettingsForm button[type="button"] {
+    background: var(--panel);
+    color: var(--text);
+}
+
+body[data-theme="dark"] #profile .profile-card {
+    box-shadow: none;
+}
+
+@media (max-width: 600px) {
+    #profile .profile-card {
+        padding: 20px;
+    }
+}
+
+</style>
 </body>
 </html>

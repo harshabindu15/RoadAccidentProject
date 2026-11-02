@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | Road Safety Insights</title>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg:#F5F0E8;
+    --card:#FFFCF6;
+    --text:#263A36;
+    --muted:#718078;
+    --accent:#C66B52;
+    --border:#DDD2C2;
+}
+
+body.dark {
+    --bg:#171F1C;
+    --card:#212D28;
+    --text:#E8DCC9;
+    --muted:#A8B8B1;
+    --accent:#E58A6E;
+    --border:#394940;
+}
+
+* {
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body {
+    font-family:'DM Sans',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.login-container {
+    width:100%;
+    max-width:430px;
+}
+
+.logo {
+    text-align:center;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:25px;
+    font-weight:700;
+    margin-bottom:30px;
+}
+
+.logo span {
+    color:var(--accent);
+}
+
+.login-card {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:40px;
+}
+
+h1 {
+    font-family:'Space Grotesk',sans-serif;
+    margin-bottom:10px;
+}
+
+.subtitle {
+    color:var(--muted);
+    margin-bottom:30px;
+}
+
+label {
+    display:block;
+    margin:18px 0 8px;
+    font-weight:600;
+}
+
+input {
+    width:100%;
+    padding:14px;
+    border:1px solid var(--border);
+    border-radius:9px;
+    background:var(--bg);
+    color:var(--text);
+    font-family:inherit;
+    outline:none;
+}
+
+input:focus {
+    border-color:var(--accent);
+}
+
+button {
+    width:100%;
+    margin-top:25px;
+    padding:14px;
+    border:none;
+    border-radius:9px;
+    background:var(--accent);
+    color:white;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.back {
+    display:block;
+    text-align:center;
+    margin-top:22px;
+    color:var(--muted);
+    text-decoration:none;
+}
+
+.theme {
+    position:absolute;
+    top:20px;
+    right:20px;
+    padding:10px 15px;
+    width:auto;
+    margin:0;
+}
+
+.password-box {
+    position: relative;
+    width: 100%;
+}
+
+.password-box input {
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 75px;
+}
+
+.password-box .show-password {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    width: auto;
+    margin: 0;
+    padding: 5px 0;
+    background: transparent;
+    border: none;
+    color: #C66B52;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.error-message {
+    background: #FCEAE5;
+    color: #A84D38;
+    border: 1px solid #E8B5A5;
+    border-radius: 10px;
+    padding: 12px 15px;
+    margin: 18px 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #E8F0FE inset;
+    -webkit-text-fill-color: #263A36;
+    transition: background-color 5000s ease-in-out 0s;
+}
+</style>
+</head>
+
+<body>
+
+<button class="theme" onclick="toggleTheme()">🌙 / ☀️</button>
+
+<div class="login-container">
+
+    <div class="logo">
+        ROAD <span>SAFETY</span> INSIGHTS
+    </div>
+
+    <div class="login-card">
+
+        <h1>Welcome Back</h1>
+
+{% if error %}
+<div class="error-message">
+    ⚠️ {{ error }}
+</div>
+{% endif %}
+
+        <p class="subtitle">
+            Sign in to access the accident analysis dashboard.
+        </p>
+
+        <form action="/login" method="POST">
+
+            <label>Full Name</label>
+<input type="text" name="name"
+       placeholder="Enter your full name" required>
+
+<label>Email</label>
+<input type="email" name="email"
+       placeholder="Enter your email" required>
+
+            <label>Password</label>
+
+            <div class="password-box">
+               <input type="password" name="password"
+                      id="password"
+                      placeholder="Enter your password"
+                      required>
+
+                <button type="button"
+                        onclick="togglePassword()"
+                        class="show-password">Show</button>
+            </div>
+
+            <button type="submit">Login to Dashboard →</button>
+
+        </form>
+
+        <a href="/" class="back">← Back to Home</a>
+
+    </div>
+
+</div>
+
+<script>
+function applyTheme() {
+    const theme = localStorage.getItem("roadTheme") || "light";
+    document.body.classList.toggle("dark", theme === "dark");
+}
+
+function toggleTheme() {
+    const isDark = document.body.classList.toggle("dark");
+    localStorage.setItem("roadTheme", isDark ? "dark" : "light");
+}
+
+applyTheme();
+function togglePassword() {
+    const password = document.getElementById("password");
+    const button = document.querySelector(".show-password");
+
+    if (password.type === "password") {
+        password.type = "text";
+        button.textContent = "Hide";
+    } else {
+        password.type = "password";
+        button.textContent = "Show";
+    }
+}
+</script>
+
+</body>
+</html>
