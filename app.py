@@ -207,10 +207,12 @@ def dashboard():
                 COALESCE(SUM(injuries), 0) AS total_injuries,
                 SUM(
                     CASE
-                        WHEN location IS NULL
-                          OR accident_time IS NULL
-                          OR vehicle_type IS NULL
-                          OR severity IS NULL
+                        WHEN location IS NULL OR TRIM(location) = ''
+  OR accident_time IS NULL
+  OR vehicle_type IS NULL OR TRIM(vehicle_type) = ''
+  OR severity IS NULL OR TRIM(severity) = ''
+  OR road_name IS NULL OR TRIM(road_name) = ''
+  OR weather IS NULL OR TRIM(weather) = ''
                         THEN 1 ELSE 0
                     END
                 ) AS missing_records
