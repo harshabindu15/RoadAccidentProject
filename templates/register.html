@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Register | Road Safety Insights</title>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg:#F5F0E8;
+    --card:#FFFCF6;
+    --text:#263A36;
+    --muted:#718078;
+    --accent:#C66B52;
+    --border:#DDD2C2;
+}
+
+* {
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body {
+    font-family:'DM Sans',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.container {
+    width:100%;
+    max-width:430px;
+}
+
+.logo {
+    text-align:center;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:25px;
+    font-weight:700;
+    margin-bottom:30px;
+}
+
+.logo span {
+    color:var(--accent);
+}
+
+.card {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:40px;
+}
+
+h1 {
+    font-family:'Space Grotesk',sans-serif;
+    margin-bottom:10px;
+}
+
+.subtitle {
+    color:var(--muted);
+    margin-bottom:25px;
+}
+
+label {
+    display:block;
+    margin:18px 0 8px;
+    font-weight:600;
+}
+
+input {
+    width:100%;
+    padding:14px;
+    border:1px solid var(--border);
+    border-radius:9px;
+    background:var(--bg);
+    color:var(--text);
+    font-family:inherit;
+    outline:none;
+}
+
+input:focus {
+    border-color:var(--accent);
+}
+
+button {
+    width:100%;
+    margin-top:25px;
+    padding:14px;
+    border:none;
+    border-radius:9px;
+    background:var(--accent);
+    color:white;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.error-message {
+    background:#FCEAE5;
+    color:#A84D38;
+    border:1px solid #E8B5A5;
+    border-radius:10px;
+    padding:12px 15px;
+    margin:18px 0;
+    font-size:14px;
+}
+
+.back {
+    display:block;
+    text-align:center;
+    margin-top:22px;
+    color:var(--muted);
+    text-decoration:none;
+}
+
+.back span {
+    color:var(--accent);
+    font-weight:700;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="logo">
+        ROAD <span>SAFETY</span> INSIGHTS
+    </div>
+
+    <div class="card">
+
+        <h1>Create Account</h1>
+
+        <p class="subtitle">
+            Register to access the accident analysis dashboard.
+        </p>
+
+        {% if error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form action="/register" method="POST">
+
+            <label>Full Name</label>
+            <input type="text" name="name"
+                   placeholder="Enter your full name"
+                   required>
+
+            <label>Email</label>
+            <input type="email" name="email"
+                   placeholder="Enter your email"
+                   required>
+
+            <label>Password</label>
+            <input type="password" name="password"
+                   placeholder="Create a password (min. 8 characters)"
+                   minlength="8"
+                   required>
+
+            <label>Confirm Password</label>
+            <input type="password" name="confirm_password"
+                   placeholder="Confirm your password"
+                   required>
+
+            <button type="submit">Create Account →</button>
+
+        </form>
+
+        <a href="/login" class="back">
+            Already have an account? <span>Login</span>
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -833,6 +833,12 @@ body[data-theme="dark"] .sidebar-toggle {
         </select>
       </div>
     </div>
+        <div class="download-buttons">
+      <button onclick="downloadSelectedYear()">Download Selected Year</button>
+      <button onclick="window.location.href='/download_records?year=all'">
+        Download All Records
+      </button>
+    </div>
 
     <div class="table-wrap">
       <table>
@@ -1334,6 +1340,16 @@ const chartColors = {
   status.textContent = `Accident data loaded for ${data.year ?? $("yearInput").value}.`;
 }
 
+function downloadSelectedYear() {
+  const year = $("yearInput").value.trim();
+
+  if (!year || year < 2011 || year > 2026) {
+    alert("Please select a valid year between 2011 and 2026.");
+    return;
+  }
+
+  window.location.href = `/download_records?year=${year}`;
+}
 async function searchYear() {
   const year = $("yearInput").value.trim();
 
@@ -1634,6 +1650,20 @@ body[data-theme="dark"] #profile .profile-card {
     }
 }
 
+.download-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+
+.download-buttons button {
+  padding: 10px 18px;
+  border-radius: 8px;
+  font: inherit;
+  cursor: pointer;
+}
 </style>
 </body>
 </html>
