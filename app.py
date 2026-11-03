@@ -1,6 +1,9 @@
-
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+import os
+import csv
+import io
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, make_response
 import mysql.connector
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 @app.after_request
@@ -12,12 +15,21 @@ def prevent_cache(response):
 app.secret_key = "road-safety-demo-key"
 
 def get_db_connection():
-    return mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="Hbindu@15",
-        database="road_accident_db"
-    )
+    host = os.environ.get("DB_HOST", "localhost")
+
+    config = {
+        "host": host,
+        "user": os.environ.get("DB_USER", "root"),
+        "password": os.environ.get("DB_PASSWORD", ""),
+        "database": os.environ.get("DB_NAME", "road_accident_db"),
+        "port": int(os.environ.get("DB_PORT", 3306))
+    }
+
+    if host != "localhost":
+        config["ssl_ca"] = os.path.join(os.path.dirname(__file__), "ca.pem")
+        config["ssl_verify_cert"] = True
+
+    return mysql.connector.connect(**config)
 
 
 @app.route("/")
@@ -26,16 +38,40 @@ def home():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        name = request.form.get("name")
-        email = request.form.get("email")
-        password = request.form.get("password")
+        name = request.form.get("name", "").strip()
+        email = request.form.get("email", "").strip().lower()
+        password = request.form.get("password", "")
 
+        # Demo account
         if email == "demo@roadsafety.com" and password == "road123":
             session["logged_in"] = True
-            session["user_name"] = name
+            session["user_name"] = name or "Demo User"
             session["user_email"] = email
 
             return redirect(url_for("dashboard_page"))
+
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        try:
+            cursor.execute(
+                "SELECT * FROM users WHERE email = %s",
+                (email,)
+            )
+            user = cursor.fetchone()
+
+            if user and check_password_hash(
+                user["password_hash"], password
+            ):
+                session["logged_in"] = True
+                session["user_name"] = user["name"]
+                session["user_email"] = user["email"]
+
+                return redirect(url_for("dashboard_page"))
+
+        finally:
+            cursor.close()
+            conn.close()
 
         return render_template(
             "login.html",
@@ -43,6 +79,66 @@ def login():
         )
 
     return render_template("login.html")
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        name = request.form.get("name", "").strip()
+        email = request.form.get("email", "").strip().lower()
+        password = request.form.get("password", "")
+        confirm_password = request.form.get("confirm_password", "")
+
+        if not name or not email or not password:
+            return render_template(
+                "register.html",
+                error="Please fill all fields"
+            )
+
+        if password != confirm_password:
+            return render_template(
+                "register.html",
+                error="Passwords do not match"
+            )
+
+        if len(password) < 8:
+            return render_template(
+                "register.html",
+                error="Password must be at least 8 characters"
+            )
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute(
+                "SELECT user_id FROM users WHERE email = %s",
+                (email,)
+            )
+
+            if cursor.fetchone():
+                return render_template(
+                    "register.html",
+                    error="Email already registered. Please login."
+                )
+
+            password_hash = generate_password_hash(password)
+
+            cursor.execute(
+                """
+                INSERT INTO users (name, email, password_hash)
+                VALUES (%s, %s, %s)
+                """,
+                (name, email, password_hash)
+            )
+
+            conn.commit()
+
+        finally:
+            cursor.close()
+            conn.close()
+
+        return redirect(url_for("login"))
+
+    return render_template("register.html")
 
 
 @app.route("/update_profile", methods=["POST"])
@@ -277,6 +373,78 @@ def dashboard():
         if conn is not None and conn.is_connected():
             conn.close()
 
+
+@app.route("/download_records")
+def download_records():
+    if not session.get("logged_in"):
+        return redirect(url_for("login"))
+
+    year = request.args.get("year", "all")
+
+    conn = None
+    cursor = None
+
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        if year == "all":
+            cursor.execute("""
+                SELECT accident_date, accident_time, location,
+                       road_name, vehicle_type, severity,
+                       weather, deaths, injuries
+                FROM accidents
+                ORDER BY accident_date DESC
+            """)
+        else:
+            try:
+                year = int(year)
+            except ValueError:
+                return "Invalid year", 400
+
+            if year < 2011 or year > 2026:
+                return "Year must be between 2011 and 2026", 400
+
+            cursor.execute("""
+                SELECT accident_date, accident_time, location,
+                       road_name, vehicle_type, severity,
+                       weather, deaths, injuries
+                FROM accidents
+                WHERE YEAR(accident_date) = %s
+                ORDER BY accident_date DESC
+            """, (year,))
+
+        records = cursor.fetchall()
+
+        output = io.StringIO()
+
+        if records:
+            writer = csv.DictWriter(
+                output,
+                fieldnames=records[0].keys()
+            )
+            writer.writeheader()
+            writer.writerows(records)
+
+        response = make_response(output.getvalue())
+
+        response.headers["Content-Disposition"] = (
+            f"attachment; filename=accident_records_{year}.csv"
+        )
+
+        response.headers["Content-Type"] = "text/csv; charset=utf-8"
+
+        return response
+
+    except Exception as e:
+        return str(e), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+
+        if conn:
+            conn.close()
 
 if __name__ == "__main__":
     app.run(debug=True)
