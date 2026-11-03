@@ -47,12 +47,12 @@ The system features an interactive dashboard that presents accident-related info
 - Includes accident date, time, location, vehicle type, severity, deaths, injuries, and weather conditions.
 - Provides search functionality to find specific accident records.
 
- Data Management
+### Data Management
 - Uses MySQL to store and manage accident-related information.
 - Connects the database with the Flask backend.
 - Retrieves accident data dynamically for dashboard analysis.
 
- Technologies Used
+## Technologies Used
 
 - **Python** – Backend programming and application logic.
 - **Flask** – Web application framework and API development.
@@ -63,7 +63,7 @@ The system features an interactive dashboard that presents accident-related info
 - **Chart.js** – Data visualization and interactive charts.
 - **Git & GitHub** – Version control and project collaboration.
 
- Project Architecture
+## Project Architecture
 
 The application follows a web-based architecture consisting of three main components:
 
@@ -71,16 +71,17 @@ The application follows a web-based architecture consisting of three main compon
 2. **Backend:** Handles application logic, database connectivity, and API requests using Python and Flask.
 3. **Database:** Stores accident records and provides the data required for analysis using MySQL.
 
- Project Purpose
+## Project Purpose
 This project demonstrates the practical application of web development, database management, and data visualization techniques in analyzing road accident data. It provides an organized and interactive platform for exploring accident statistics and understanding road accident patterns.
 
- Future Enhancements
+## Future Enhancements
 - Integration of verified real-world accident datasets.
 - Advanced accident prediction and analysis.
 - Geographic accident visualization using maps.
 - Additional filtering and reporting capabilities.
 - Improved data analytics and visualization features.
 
- Project Status
+## Project Status
 Developed as an academic project to demonstrate full-stack web development, database integration, and data analysis.
+
 
