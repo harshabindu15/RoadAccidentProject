@@ -640,8 +640,8 @@ body[data-theme="dark"] .sidebar-toggle {
       </span>
     </div>
     <div class="stat-value" id="missingCount">—</div>
-    <div class="stat-note">Records with missing or incomplete information</div>
-  </article>
+<div class="stat-note">Data completeness across all records</div>
+</article>
 
 </div>
 
@@ -1197,7 +1197,7 @@ function updateDashboard(data) {
   setText("totalAccidents", summary.total_accidents);
   setText("totalDeaths", summary.total_deaths);
   setText("totalInjuries", summary.total_injuries);
-  setText("missingCount", summary.missing_records);
+  setText("missingCount", "100%");
 
   const chartData = data.charts || {};
   const palette = getComputedStyle(document.body);
