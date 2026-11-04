@@ -55,11 +55,16 @@ body {
 }
 .layout{display:flex;min-height:100vh}
 .sidebar {
+  position: fixed;
   width: 235px;
   flex-shrink: 0;
   background: var(--text);
   color: var(--bg);
   padding: 26px 16px;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  overflow-y: auto;
 }
 
 .brand {
@@ -92,7 +97,12 @@ body {
   background: var(--accent);
   color: #fff;
 }
-.main{min-width:0;flex:1;padding:28px}
+.main {
+  min-width: 0;
+  flex: 1;
+  padding: 28px;
+  margin-left: 235px;
+}
 .top {
   display: flex;
   justify-content: space-between;
@@ -381,7 +391,7 @@ body[data-theme="dark"] .sidebar .nav a.active {
 /* Collapsible Sidebar */
 
 .sidebar {
-  position: relative;
+  position: fixed;
   transition: width 0.3s ease;
 }
 
@@ -1664,6 +1674,7 @@ body[data-theme="dark"] #profile .profile-card {
   font: inherit;
   cursor: pointer;
 }
+
 </style>
 </body>
 </html>
