@@ -10,6 +10,9 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
 <style>
+
+/* ================= THEME COLORS ================= */
+
 :root {
     --bg: #F8EEE4;
     --card: #FFF9F2;
@@ -32,10 +35,16 @@ body.dark {
     --road: #263A34;
 }
 
+/* ================= GENERAL ================= */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
@@ -44,6 +53,8 @@ body {
     color: var(--text);
     transition: background .3s, color .3s;
 }
+
+/* ================= HEADER ================= */
 
 header {
     display: flex;
@@ -117,6 +128,8 @@ button {
     opacity: .9;
 }
 
+/* ================= HERO ================= */
+
 .hero {
     min-height: 500px;
     padding: 65px 5%;
@@ -169,7 +182,7 @@ h1 span {
     margin-bottom: 30px;
 }
 
-/* Road illustration */
+/* ================= ROAD ILLUSTRATION ================= */
 
 .road-scene {
     height: 390px;
@@ -243,6 +256,8 @@ body.dark .road-scene {
     border-bottom: 2px solid #F6E4D2;
     opacity: .7;
 }
+
+/* ================= ANALYTICS CARDS ================= */
 
 .analytics-card {
     position: absolute;
@@ -318,11 +333,20 @@ body.dark .road-scene {
     background: var(--accent);
 }
 
-.dot.green { background: #72958B; }
-.dot.gold { background: #D9A441; }
+.dot.green {
+    background: #72958B;
+}
+
+.dot.gold {
+    background: #D9A441;
+}
+
+/* ================= STATS SECTION ================= */
+
+/* Light mode: cream background */
 
 .stats {
-    background: var(--green);
+    background: var(--bg);
     padding: 28px 5%;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -330,11 +354,11 @@ body.dark .road-scene {
 }
 
 .stat-card {
-    background: rgba(255,255,255,.07);
-    border: 1px solid rgba(255,255,255,.12);
+    background: var(--card);
+    border: 1px solid var(--border);
     border-radius: 14px;
     padding: 22px;
-    color: #F8EEE4;
+    color: var(--text);
     border-top: 3px solid var(--accent);
 }
 
@@ -345,9 +369,11 @@ body.dark .road-scene {
 }
 
 .stat-card p {
-    color: #B8C5BD;
+    color: var(--muted);
     font-size: 14px;
 }
+
+/* ================= ABOUT SECTION ================= */
 
 .about {
     padding: 55px 5%;
@@ -357,8 +383,9 @@ body.dark .road-scene {
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: 18px;
-    padding: 30px;
-    max-width: 850px;
+    padding: 35px;
+    width: 100%;
+    max-width: none;
 }
 
 .about h2 {
@@ -371,15 +398,21 @@ body.dark .road-scene {
     line-height: 1.8;
 }
 
+/* ================= FOOTER ================= */
+
 footer {
     background: var(--green);
     color: #E8DCC9;
     padding: 25px 5%;
     text-align: center;
     font-size: 13px;
+    line-height: 1.8;
 }
 
+/* ================= TABLET RESPONSIVE ================= */
+
 @media(max-width: 850px) {
+
     nav {
         display: none;
     }
@@ -398,7 +431,10 @@ footer {
     }
 }
 
+/* ================= MOBILE RESPONSIVE ================= */
+
 @media(max-width: 480px) {
+
     header {
         padding: 18px 4%;
     }
@@ -440,14 +476,24 @@ footer {
     .analytics-card strong {
         font-size: 20px;
     }
+
+    .about-card {
+        padding: 22px;
+    }
 }
+
 </style>
 </head>
 
 <body>
 
+<!-- ================= HEADER ================= -->
+
 <header>
-    <div class="logo">ROAD <span>SAFETY</span> INSIGHTS</div>
+
+    <div class="logo">
+        ROAD <span>SAFETY</span> INSIGHTS
+    </div>
 
     <nav>
         <a href="#overview">Overview</a>
@@ -456,18 +502,28 @@ footer {
     </nav>
 
     <div class="header-actions">
+
         <button class="theme-btn" onclick="toggleTheme()" id="themeButton">
             🌙 Dark
         </button>
 
-        <a href="/login" class="login-btn">Login →</a>
+        <a href="/login" class="login-btn">
+            Login →
+        </a>
+
     </div>
+
 </header>
+
+<!-- ================= HERO ================= -->
 
 <section class="hero" id="overview">
 
     <div class="hero-content">
-        <div class="tag">ROAD ACCIDENT DATA ANALYSIS SYSTEM</div>
+
+        <div class="tag">
+            ROAD ACCIDENT DATA ANALYSIS SYSTEM
+        </div>
 
         <h1>
             Making Roads<br>
@@ -483,46 +539,68 @@ footer {
         <a href="/login" class="explore-btn">
             Explore Dashboard →
         </a>
+
     </div>
+
+    <!-- Road illustration -->
 
     <div class="road-scene">
 
         <div class="city">
-            <div></div><div></div><div></div><div></div><div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
         </div>
 
         <div class="road"></div>
 
         <div class="analytics-card accident-card">
+
             <h3>🚘 Accident Data Coverage</h3>
+
             <strong>2011 – 2026</strong>
+
             <small>Available data period</small>
 
             <div class="chart-bars">
-                <span></span><span></span><span></span>
-                <span></span><span></span><span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
+
         </div>
 
         <div class="analytics-card severity-card">
+
             <h3>Accident Analysis</h3>
 
             <div class="severity-row">
-                <span class="dot green"></span> Location Analysis
+                <span class="dot green"></span>
+                Location Analysis
             </div>
 
             <div class="severity-row">
-                <span class="dot gold"></span> Accident Trends
+                <span class="dot gold"></span>
+                Accident Trends
             </div>
 
             <div class="severity-row">
-                <span class="dot"></span> Severity Analysis
+                <span class="dot"></span>
+                Severity Analysis
             </div>
+
         </div>
 
     </div>
 
 </section>
+
+<!-- ================= STATS ================= -->
 
 <section class="stats" id="analytics">
 
@@ -543,9 +621,12 @@ footer {
 
 </section>
 
+<!-- ================= ABOUT ================= -->
+
 <section class="about" id="about">
 
     <div class="about-card">
+
         <h2>About the Project</h2>
 
         <p>
@@ -555,34 +636,51 @@ footer {
             The dashboard helps users understand accident patterns
             through organized data and visual insights.
         </p>
+
     </div>
 
 </section>
 
+<!-- ================= FOOTER ================= -->
+
 <footer>
+
     Road Safety Insights | Road Accident Data Analysis System
+
+    <br><br>
+
+    Contact: roadsafety@example.com | +91 98765 43210
+
 </footer>
 
+<!-- ================= THEME SCRIPT ================= -->
+
 <script>
+
 function applyTheme() {
+
     const theme = localStorage.getItem("roadTheme") || "light";
 
     document.body.classList.toggle("dark", theme === "dark");
 
     document.getElementById("themeButton").textContent =
         theme === "dark" ? "☀️ Light" : "🌙 Dark";
+
 }
 
 function toggleTheme() {
+
     const isDark = document.body.classList.toggle("dark");
 
     localStorage.setItem("roadTheme", isDark ? "dark" : "light");
 
     document.getElementById("themeButton").textContent =
         isDark ? "☀️ Light" : "🌙 Dark";
+
 }
 
 applyTheme();
+
 </script>
 
 </body>
